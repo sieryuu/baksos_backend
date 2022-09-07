@@ -1,0 +1,37 @@
+[
+    {
+      "model": "referensi.penyakit",
+      "pk": "KATARAK",
+      "fields": {
+        "nama": "KATARAK"
+      }
+    },
+    {
+      "model": "referensi.penyakit",
+      "pk": "PYTE",
+      "fields": {
+        "nama": "PYTE"
+      }
+    },
+    {
+      "model": "referensi.penyakit",
+      "pk": "BENJOLAN",
+      "fields": {
+        "nama": "BENJOLAN"
+      }
+    },{
+      "model": "referensi.penyakit",
+      "pk": "HERNIA",
+      "fields": {
+        "nama": "HERNIA"
+      }
+    },{
+      "model": "referensi.penyakit",
+      "pk": "SUMBING",
+      "fields": {
+        "nama": "SUMBING"
+      }
+    }
+  ]
+  
+  
