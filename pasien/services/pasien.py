@@ -4,7 +4,7 @@ from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
 from openpyxl.utils import get_column_letter
 from datetime import datetime
 from pasien.models import Pasien
-from referensi.models import Penyakit, Puskemas
+from referensi.models import Penyakit, Puskesmas
 
 
 def generate_import_template():
@@ -16,13 +16,12 @@ def generate_import_template():
         "Puskesmas",
         "Penyakit",
         "Nama",
-        "Nomor KTP",
-        "Tempat Lahir",
+        "Nomor Identitas",
+        "Tipe Identitas" "Tempat Lahir",
         "Tanggal Lahir",
         "Jenis Kelamin",
         "Alamat",
         "Daerah",
-        "Pulau",
         "Nomor Telepon",
         "Nama Keluarga",
         "Nomor Telepon Keluarga",
@@ -61,7 +60,7 @@ def import_pasien(file):
     if worksheet["A1"].value != "Nomor Seri":
         raise Exception("Invalid file, please check again!")
 
-    puskemas_list = Puskemas.objects.all()
+    puskemas_list = Puskesmas.objects.all()
     penyakit_list = Penyakit.objects.all()
 
     now = datetime.now()
@@ -71,31 +70,35 @@ def import_pasien(file):
         min_row=2, min_col=1, max_row=worksheet.max_row, max_col=worksheet.max_column
     ):
         date_of_birth = now - row[6].value
-        years = (date_of_birth.total_seconds()/ (365.242*24*3600))
-        tahun=int(years)
+        years = date_of_birth.total_seconds() / (365.242 * 24 * 3600)
+        tahun = int(years)
 
-        months=(years-tahun)*12
-        bulan=int(months)
+        months = (years - tahun) * 12
+        bulan = int(months)
 
-        umur = f'{tahun} tahun {bulan} bulan'
+        umur = f"{tahun} tahun {bulan} bulan"
 
-        new_patients.append(Pasien(
-            nomor_seri=row[0].value,
-            puskemas=puskemas_list.get(puskesmas=row[1].value),
-            penyakit=penyakit_list.get(nama=row[2].value),
-            nama=row[3].value,
-            nomor_ktp=row[4].value,
-            tempat_lahir=row[5].value,
-            tanggal_lahir=row[6].value,
-            umur=umur,
-            jenis_kelamin=row[7].value,
-            alamat=row[8].value,
-            daerah=row[9].value,
-            pulau=row[10].value,
-            nomor_telepon=row[11].value,
-            nama_keluarga=row[12].value,
-            nomor_telepon_keluarga=row[13].value
-        )
+        puskemas = puskemas_list.get(puskesmas=row[1].value)
+
+        new_patients.append(
+            Pasien(
+                nomor_seri=row[0].value,
+                puskemas=puskemas,
+                penyakit=penyakit_list.get(nama=row[2].value),
+                nama=row[3].value,
+                nomor_identitas=row[4].value,
+                tipe_identitas=row[5].value,
+                tempat_lahir=row[5].value,
+                tanggal_lahir=row[6].value,
+                umur=umur,
+                jenis_kelamin=row[7].value,
+                alamat=row[8].value,
+                daerah=row[9].value,
+                pulau=puskemas.pulau,
+                nomor_telepon=row[10].value,
+                nama_keluarga=row[11].value,
+                nomor_telepon_keluarga=row[12].value,
+            )
         )
 
     Pasien.objects.bulk_create(new_patients)

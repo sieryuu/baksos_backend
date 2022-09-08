@@ -17,11 +17,17 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from pasien.views import PasienViewSet
+from pasien.views import DetailPasienViewSet, PasienViewSet, ScreeningPasienViewSet
+from referensi.views import PenyakitViewSet, PuskesmasViewSet
 
 
 router = routers.DefaultRouter()
 router.register(r'pasien', PasienViewSet)
+router.register(r'detail-pasien', DetailPasienViewSet)
+router.register(r'screening-pasien', ScreeningPasienViewSet)
+router.register(r'puskesmas', PuskesmasViewSet)
+router.register(r'penyakit', PenyakitViewSet)
+
 
 urlpatterns = [
     path('', include(router.urls)),
