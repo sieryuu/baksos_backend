@@ -1,8 +1,8 @@
 from django.db import models
 
 # Create your models here.
-class Puskemas(models.Model):
-    puskesmas = models.CharField(max_length=30)
+class Puskesmas(models.Model):
+    puskesmas = models.CharField(max_length=30, primary_key=True)
     pulau = models.CharField(max_length=30)
 
 class Penyakit(models.Model):
