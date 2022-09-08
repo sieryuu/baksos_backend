@@ -1,0 +1,250 @@
+[
+  {
+    "model": "referensi.puskemas",
+    "pk": 1,
+    "fields": {
+      "puskesmas": "BALOI PERMAI",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 2,
+    "fields": {
+      "puskesmas": "BATU AJI",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 3,
+    "fields": {
+      "puskesmas": "BELAKANG PADANG",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 4,
+    "fields": {
+      "puskesmas": "BOTANIA",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 5,
+    "fields": {
+      "puskesmas": "BULANG",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 6,
+    "fields": {
+      "puskesmas": "GALANG",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 7,
+    "fields": {
+      "puskesmas": "KABIL",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 8,
+    "fields": {
+      "puskesmas": "KAMPUNG JABI",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 9,
+    "fields": {
+      "puskesmas": "LUBUK BAJA",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 10,
+    "fields": {
+      "puskesmas": "MENTABAU",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 11,
+    "fields": {
+      "puskesmas": "REMPANG CATE",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 12,
+    "fields": {
+      "puskesmas": "SAMBAU",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 13,
+    "fields": {
+      "puskesmas": "SEI LANGKAI",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 14,
+    "fields": {
+      "puskesmas": "SEI LEKOP",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 15,
+    "fields": {
+      "puskesmas": "SEI PANAS",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 16,
+    "fields": {
+      "puskesmas": "SEI PANCUR",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 17,
+    "fields": {
+      "puskesmas": "SEKUPANG",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 18,
+    "fields": {
+      "puskesmas": "TANJUNG BUNTUNG BENGKONG",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 19,
+    "fields": {
+      "puskesmas": "TANJUNG SENGKUANG",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 20,
+    "fields": {
+      "puskesmas": "TANJUNG UNCANG",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 21,
+    "fields": {
+      "puskesmas": "TIBAN BARU",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 22,
+    "fields": {
+      "puskesmas": "RSBK",
+      "pulau": "BATAM"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 23,
+    "fields": {
+      "puskesmas": "TANJUNG BALAI KARIMUN",
+      "pulau": "TANJUNG BALAI KARIMUN"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 24,
+    "fields": {
+      "puskesmas": "TANJUNG BATU",
+      "pulau": "TANJUNG BATU"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 25,
+    "fields": {
+      "puskesmas": "MORO",
+      "pulau": "MORO"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 26,
+    "fields": {
+      "puskesmas": "TANJUNG BATU KECIL",
+      "pulau": "TANJUNG BATU KECIL"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 27,
+    "fields": {
+      "puskesmas": "SELAT PANJANG",
+      "pulau": "SELAT PANJANG"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 28,
+    "fields": {
+      "puskesmas": "TANJUNG PINANG",
+      "pulau": "TANJUNG PINANG"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 29,
+    "fields": {
+      "puskesmas": "TANJUNG UBAN",
+      "pulau": "TANJUNG UBAN"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 30,
+    "fields": {
+      "puskesmas": "DABO SINGKEP",
+      "pulau": "DABO SINGKEP"
+    }
+  },
+  {
+    "model": "referensi.puskemas",
+    "pk": 31,
+    "fields": {
+      "puskesmas": "GALANG/REMPANG",
+      "pulau": "GALANG/REMPANG"
+    }
+  }
+]
