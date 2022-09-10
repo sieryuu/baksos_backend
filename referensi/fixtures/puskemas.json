@@ -1,6 +1,6 @@
 [
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "BALOI PERMAI",
     "fields": {
       "puskesmas": "BALOI PERMAI",
@@ -8,15 +8,15 @@
     }
   },
   {
-    "model": "referensi.puskemas",
-    "pk": "BALOI PERMAI",
+    "model": "referensi.puskesmas",
+    "pk": "BATU AJI",
     "fields": {
       "puskesmas": "BATU AJI",
       "pulau": "BATAM"
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "BELAKANG PADANG",
     "fields": {
       "puskesmas": "BELAKANG PADANG",
@@ -24,7 +24,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "BOTANIA",
     "fields": {
       "puskesmas": "BOTANIA",
@@ -32,7 +32,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "BULANG",
     "fields": {
       "puskesmas": "BULANG",
@@ -40,7 +40,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "GALANG",
     "fields": {
       "puskesmas": "GALANG",
@@ -48,7 +48,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "KABIL",
     "fields": {
       "puskesmas": "KABIL",
@@ -56,7 +56,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "KAMPUNG JABI",
     "fields": {
       "puskesmas": "KAMPUNG JABI",
@@ -64,7 +64,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "LUBUK BAJA",
     "fields": {
       "puskesmas": "LUBUK BAJA",
@@ -72,7 +72,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "MENTABAU",
     "fields": {
       "puskesmas": "MENTABAU",
@@ -80,7 +80,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "REMPANG CATE",
     "fields": {
       "puskesmas": "REMPANG CATE",
@@ -88,7 +88,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "SAMBAU",
     "fields": {
       "puskesmas": "SAMBAU",
@@ -96,7 +96,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "SEI LANGKAI",
     "fields": {
       "puskesmas": "SEI LANGKAI",
@@ -104,7 +104,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "SEI LEKOP",
     "fields": {
       "puskesmas": "SEI LEKOP",
@@ -112,7 +112,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "SEI PANAS",
     "fields": {
       "puskesmas": "SEI PANAS",
@@ -120,7 +120,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "SEI PANCUR",
     "fields": {
       "puskesmas": "SEI PANCUR",
@@ -128,7 +128,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "SEKUPANG",
     "fields": {
       "puskesmas": "SEKUPANG",
@@ -136,7 +136,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "TANJUNG BUNTUNG BENGKONG",
     "fields": {
       "puskesmas": "TANJUNG BUNTUNG BENGKONG",
@@ -144,7 +144,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "TANJUNG SENGKUANG",
     "fields": {
       "puskesmas": "TANJUNG SENGKUANG",
@@ -152,7 +152,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "TANJUNG UNCANG",
     "fields": {
       "puskesmas": "TANJUNG UNCANG",
@@ -160,7 +160,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "TIBAN BARU",
     "fields": {
       "puskesmas": "TIBAN BARU",
@@ -168,7 +168,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "RSBK",
     "fields": {
       "puskesmas": "RSBK",
@@ -176,7 +176,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "TANJUNG BALAI KARIMUN",
     "fields": {
       "puskesmas": "TANJUNG BALAI KARIMUN",
@@ -184,7 +184,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "TANJUNG BATU",
     "fields": {
       "puskesmas": "TANJUNG BATU",
@@ -192,7 +192,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "MORO",
     "fields": {
       "puskesmas": "MORO",
@@ -200,7 +200,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "TANJUNG BATU KECIL",
     "fields": {
       "puskesmas": "TANJUNG BATU KECIL",
@@ -208,7 +208,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "SELAT PANJANG",
     "fields": {
       "puskesmas": "SELAT PANJANG",
@@ -216,7 +216,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "TANJUNG PINANG",
     "fields": {
       "puskesmas": "TANJUNG PINANG",
@@ -224,7 +224,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "TANJUNG UBAN",
     "fields": {
       "puskesmas": "TANJUNG UBAN",
@@ -232,7 +232,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "DABO SINGKEP",
     "fields": {
       "puskesmas": "DABO SINGKEP",
@@ -240,7 +240,7 @@
     }
   },
   {
-    "model": "referensi.puskemas",
+    "model": "referensi.puskesmas",
     "pk": "GALANG/REMPANG",
     "fields": {
       "puskesmas": "GALANG/REMPANG",
