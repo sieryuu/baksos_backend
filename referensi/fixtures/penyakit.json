@@ -8,9 +8,9 @@
     },
     {
       "model": "referensi.penyakit",
-      "pk": "PYTE",
+      "pk": "PYTERIGIUM",
       "fields": {
-        "nama": "PYTE"
+        "nama": "PYTERIGIUM"
       }
     },
     {

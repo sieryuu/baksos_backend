@@ -1,20 +1,20 @@
-from datetime import datetime
-from rest_framework import viewsets
-from pasien.models import DetailPasien, Pasien, ScreeningPasien
-from pasien.serializer import (
-    CapKehadiranLabSerializer,
-    CapKehadiranSerializer,
-    DetailPasienSerializer,
-    ImportPasienSerializer,
-    PasienSerializer,
-    ScreeningPasienSerializer,
-)
-from rest_framework.decorators import action
-from pasien.services import pasien as PasienService
+from django.db import transaction
 from django.http import HttpResponse
 from openpyxl.writer.excel import save_virtual_workbook
+from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from crum import get_current_user
+
+from pasien.models import DetailPasien, Pasien, ScreeningPasien
+from pasien.serializer import (CapKehadiranKartuKuningSerializer,
+                               CapKehadiranLabSerializer,
+                               CapKehadiranRadiologiSerializer,
+                               CapKehadiranSerializer, DetailPasienSerializer,
+                               ImportPasienSerializer, KartuKuningSerializer,
+                               PasienSerializer, ScreeningPasienSerializer)
+from pasien.services import pasien as PasienService
+from pasien.services import screening_pasien as ScreeningPasienService
+
 
 # Create your views here.
 class PasienViewSet(viewsets.ModelViewSet):
@@ -46,25 +46,30 @@ class PasienViewSet(viewsets.ModelViewSet):
         except Exception as ex:
             raise ex
 
-    @action(detail=False, methods=["post"])
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
     def update_penyakit(self, request, pk=None):
         pasien: Pasien = self.get_object()
+        penyakit = request.data["penyakit"]
 
-        pasien.penyakit_id = request.data['penyakit']
-        pasien.diagnosa = request.data['penyakit']
-        pasien.save()
+        PasienService.update_penyakit(pasien=pasien, penyakit=penyakit)
 
-        return Response('OK')
-    
-    @action(detail=False, methods=["post"])
+        return Response(
+            f"Penyakit pasien {pasien.nama} sudah diperbaharui menjadi {penyakit}!"
+        )
+
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
     def update_diagnosa(self, request, pk=None):
         pasien: Pasien = self.get_object()
 
-        pasien.penyakit_id = request.data['penyakit']
-        pasien.diagnosa = request.data['diagnosa']
-        pasien.save()
+        diagnosa = request.data["diagnosa"]
 
-        return Response('OK')
+        PasienService.update_diagnosa(pasien=pasien, diagnosa=diagnosa)
+
+        return Response(
+            f"Diagnosa pasien {pasien.nama} sudah diperbaharui menjadi {diagnosa}!"
+        )
 
 
 class DetailPasienViewSet(viewsets.ModelViewSet):
@@ -76,40 +81,33 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
     queryset = ScreeningPasien.objects.all()
     serializer_class = ScreeningPasienSerializer
 
+    @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_cek_tensi(self, request, pk=None):
         serializer = CapKehadiranSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         kehadiran = serializer.validated_data["hadir"]
-        pasien = Pasien.objects.get(id=serializer.validated_data["pasien"])
+        pasien_id = serializer.validated_data["pasien_id"]
 
-        screening_pasien: ScreeningPasien = ScreeningPasien.objects.get_or_create(
-            pasien=pasien
-        )
-        screening_pasien.telah_lewat_cek_tensi = kehadiran
-        screening_pasien.jam_cek_tensi = datetime.now()
-        screening_pasien.petugas_cek_tensi = get_current_user()
-        screening_pasien.save()
+        ScreeningPasienService.hadir_tensi(kehadiran=kehadiran, pasien_id=pasien_id)
 
-        return Response("OK!")
+        return Response("Berhasil mencatat kehadiran Tensi!")
 
+    @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_pemeriksaan(self, request, pk=None):
         serializer = CapKehadiranSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         kehadiran = serializer.validated_data["hadir"]
-        pasien = Pasien.objects.get(id=serializer.validated_data["pasien"])
+        pasien_id = serializer.validated_data["pasien_id"]
 
-        screening_pasien: ScreeningPasien = ScreeningPasien.objects.get_or_create(
-            pasien=pasien
+        ScreeningPasienService.hadir_pemeriksaan(
+            kehadiran=kehadiran, pasien_id=pasien_id
         )
-        screening_pasien.telah_lewat_pemeriksaan = kehadiran
-        screening_pasien.jam_pemeriksaan = datetime.now()
-        screening_pasien.petugas_pemeriksaaan = get_current_user()
-        screening_pasien.save()
 
-        return Response("OK!")
+        return Response("Berhasil mencatat kehadiran Pemeriksaan!")
 
+    @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_lab(self, request, pk=None):
         serializer = CapKehadiranLabSerializer(data=request.data)
@@ -117,56 +115,72 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         kehadiran = serializer.validated_data["hadir"]
         perlu_ekg = serializer.validated_data["perlu_ekg"]
         perlu_radiologi = serializer.validated_data["perlu_radiologi"]
+        pasien_id = serializer.validated_data["pasien_id"]
 
-        pasien: Pasien = Pasien.objects.get(id=serializer.validated_data["pasien"])
+        ScreeningPasienService.hadir_lab(
+            kehadiran=kehadiran,
+            pasien_id=pasien_id,
+            perlu_ekg=perlu_ekg,
+            perlu_radiologi=perlu_radiologi,
+        )
 
-        screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
-        screening_pasien.telah_lewat_cek_lab = kehadiran
-        screening_pasien.jam_cek_lab = datetime.now()
-        screening_pasien.petugas_cek_lab = get_current_user()
-        screening_pasien.save()
+        return Response("Berhasil mencatat kehadiran Lab!")
 
-        pasien.perlu_ekg = perlu_ekg
-        pasien.perlu_radiologi = perlu_radiologi
-        pasien.save()
-
-        return Response("OK!")
-
+    @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_radiologi(self, request, pk=None):
-        serializer = CapKehadiranLabSerializer(data=request.data)
+        serializer = CapKehadiranRadiologiSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         kehadiran = serializer.validated_data["hadir"]
         tipe_hasil_rontgen = serializer.validated_data["tipe_hasil_rontgen"]
         nomor_kertas_penyerahan = serializer.validated_data.get(
             "nomor_kertas_penyerahan"
         )
+        pasien_id = serializer.validated_data["pasien_id"]
 
-        pasien = Pasien.objects.get(id=serializer.validated_data["pasien"])
+        ScreeningPasienService.hadir_radiologi(
+            kehadiran=kehadiran,
+            pasien_id=pasien_id,
+            tipe_hasil_rontgen=tipe_hasil_rontgen,
+            nomor_kertas_penyerahan=nomor_kertas_penyerahan,
+        )
 
-        screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
-        screening_pasien.telah_lewat_cek_radiologi = kehadiran
-        screening_pasien.jam_cek_radiologi = datetime.now()
-        screening_pasien.tipe_hasil_rontgen = tipe_hasil_rontgen
-        if tipe_hasil_rontgen == "USB" and nomor_kertas_penyerahan is None:
-            raise Exception("Nomor kertas penyerahan kosong!")
-        screening_pasien.nomor_kertas_penyerahan = nomor_kertas_penyerahan
-        screening_pasien.petugas_cek_radiologi = get_current_user()
-        screening_pasien.save()
+        return Response("Berhasil mencatat kehadiran Radiologi!")
 
-        return Response("OK!")
-
+    @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_ekg(self, request, pk=None):
         serializer = CapKehadiranSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         kehadiran = serializer.validated_data["hadir"]
-        pasien = Pasien.objects.get(id=serializer.validated_data["pasien"])
+        pasien_id = serializer.validated_data["pasien_id"]
 
-        screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
-        screening_pasien.telah_lewat_cek_ekg = kehadiran
-        screening_pasien.jam_cek_ekg = datetime.now()
-        screening_pasien.petugas_cek_ekg = get_current_user()
-        screening_pasien.save()
+        ScreeningPasienService.hadir_ekg(kehadiran=kehadiran, pasien_id=pasien_id)
 
-        return Response("OK!")
+        return Response("Berhasil mencatat kehadiran EKG!")
+
+    @transaction.atomic
+    @action(detail=False, methods=["post"])
+    def hadir_kartu_kuning(self, request, pk=None):
+        serializer = CapKehadiranKartuKuningSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        kehadiran = serializer.validated_data["hadir"]
+        pasien_id = serializer.validated_data["pasien_id"]
+        status = serializer.validated_data["status"]
+
+        tanggal = serializer.validated_data.get("tanggal")
+        jam = serializer.validated_data.get("jam")
+        perhatian = serializer.validated_data.get("perhatian")
+
+        kartu_kuning = ScreeningPasienService.hadir_kartu_kuning(
+            kehadiran=kehadiran,
+            pasien_id=pasien_id,
+            status=status,
+            tanggal=tanggal,
+            jam=jam,
+            perhatian=perhatian,
+        )
+
+        serializer = KartuKuningSerializer(kartu_kuning)
+
+        return Response(serializer.data)

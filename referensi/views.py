@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from rest_framework import viewsets
+
 from referensi.models import Penyakit, Puskesmas
 from referensi.serializer import PuskesmasSerializer
+
 
 # Create your views here.
 class PenyakitViewSet(viewsets.ModelViewSet):

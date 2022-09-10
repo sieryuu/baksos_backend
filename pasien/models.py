@@ -1,13 +1,16 @@
 from typing import Iterable, Optional
+
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.db.models import UniqueConstraint
 
 from referensi.models import Penyakit, Puskesmas
-from django.contrib.postgres.fields import ArrayField
+
 
 # Create your models here.
 class Pasien(models.Model):
     nomor_seri = models.CharField(max_length=20)
-    puskemas = models.ForeignKey(Puskesmas, on_delete=models.CASCADE)
+    puskesmas = models.ForeignKey(Puskesmas, on_delete=models.CASCADE)
     penyakit = models.ForeignKey(Penyakit, on_delete=models.CASCADE)
     nama = models.CharField(max_length=50)
     nomor_identitas = models.CharField(max_length=16, unique=True)
@@ -30,26 +33,30 @@ class Pasien(models.Model):
     tanggal_nomor_antrian = models.DateTimeField(null=True)
     telah_daftar = models.BooleanField(default=False)
     jam_daftar = models.DateTimeField(null=True)
-    status = models.CharField(max_length=30, null=True)
+    last_status = models.CharField(max_length=30, null=True)
+    komentar = models.CharField(max_length=255, null=True)
 
     class Meta:
-       indexes = [
-            models.Index(fields=['nama', 'tanggal_lahir']),
+        constraints = [
+            UniqueConstraint(
+                fields=["nama", "tanggal_lahir"], name="unique_name_and_dob"
+            )
         ]
 
     def save(
         self,
-        force_insert: bool = ...,
-        force_update: bool = ...,
-        using: Optional[str] = ...,
-        update_fields: Optional[Iterable[str]] = ...,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: Optional[str] = "default",
+        update_fields: Optional[Iterable[str]] = None,
     ) -> None:
-        if Pasien.objects.filter(
-            nomor_antrian=self.nomor_antrian,
-            penyakit=self.penyakit,
-            tanggal_nomor_antrian__date=self.tanggal_nomor_antrian.date,
-        ):
-            raise Exception("Nomor antrian duplikat!")
+        if self.nomor_antrian and self.tanggal_nomor_antrian:
+            if Pasien.objects.filter(
+                nomor_antrian=self.nomor_antrian,
+                penyakit=self.penyakit,
+                tanggal_nomor_antrian__date=self.tanggal_nomor_antrian.date,
+            ):
+                raise Exception("Nomor antrian duplikat!")
 
         if self.pk is None:
             self.diagnosa = self.penyakit.pk
@@ -83,24 +90,24 @@ class ScreeningPasien(models.Model):
 
 
 class DetailPasien(models.Model):
-    tensi = models.CharField(max_length=10)
-    HB = models.CharField(max_length=10)
-    LEUCO = models.CharField(max_length=10)
-    BT = models.CharField(max_length=10)
-    GDS = models.CharField(max_length=10)
-    ERY = models.CharField(max_length=10)
-    CT = models.CharField(max_length=10)
-    golongan_darah = models.CharField(max_length=10)
-    HBSAG = models.CharField(max_length=10)
-    HT = models.CharField(max_length=10)
-    THROMBO = models.CharField(max_length=10)
-    HIV = models.CharField(max_length=10)
+    tensi = models.CharField(max_length=100)
+    HB = models.CharField(max_length=100)
+    LEUCO = models.CharField(max_length=100)
+    BT = models.CharField(max_length=100)
+    GDS = models.CharField(max_length=100)
+    ERY = models.CharField(max_length=100)
+    CT = models.CharField(max_length=100)
+    golongan_darah = models.CharField(max_length=100)
+    HBSAG = models.CharField(max_length=100)
+    HT = models.CharField(max_length=100)
+    THROMBO = models.CharField(max_length=100)
+    HIV = models.CharField(max_length=100)
 
 
 class KartuKuning(models.Model):
-    pasien = models.ForeignKey(Pasien, on_delete=models.CASCADE)
-    harap_datang_ke = models.CharField(max_length=100, null=True)
-    tanggal_operasi = models.DateTimeField(null=True)
+    pasien = models.OneToOneField(Pasien, on_delete=models.CASCADE)
+    nomor = models.CharField(max_length=10)
+    tanggal_operasi = models.DateField(null=True)
     jam_operasi = models.TimeField(null=True)
     perhatian = ArrayField(models.CharField(max_length=50), null=True)
     status = models.CharField(max_length=10)

@@ -1,6 +1,7 @@
-from rest_framework import serializers
-from .models import DetailPasien, Pasien, ScreeningPasien
 from django.core.validators import FileExtensionValidator
+from rest_framework import serializers
+
+from .models import DetailPasien, KartuKuning, Pasien, ScreeningPasien
 
 
 class PasienSerializer(serializers.ModelSerializer):
@@ -21,6 +22,11 @@ class ScreeningPasienSerializer(serializers.ModelSerializer):
         model = ScreeningPasien
         fields = '__all__'
 
+class KartuKuningSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = KartuKuning
+        fields = '__all__'
+
 
 class ImportPasienSerializer(serializers.Serializer):
     file = serializers.FileField(
@@ -29,7 +35,7 @@ class ImportPasienSerializer(serializers.Serializer):
 
 class CapKehadiranSerializer(serializers.Serializer):
     hadir = serializers.BooleanField()
-    pasien = serializers.IntegerField()
+    pasien_id = serializers.IntegerField()
 
 class CapKehadiranLabSerializer(CapKehadiranSerializer):
     perlu_radiologi = serializers.BooleanField()
@@ -39,3 +45,9 @@ class CapKehadiranLabSerializer(CapKehadiranSerializer):
 class CapKehadiranRadiologiSerializer(CapKehadiranSerializer):
     tipe_hasil_rontgen = serializers.CharField()
     nomor_kertas_penyerahan = serializers.CharField(required=False)
+
+class CapKehadiranKartuKuningSerializer(CapKehadiranSerializer):
+    status = serializers.CharField()
+    tanggal = serializers.DateField(required=False)
+    jam = serializers.TimeField(required=False)
+    perhatian = serializers.ListField(required=False)

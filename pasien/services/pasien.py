@@ -1,8 +1,11 @@
-from openpyxl import Workbook, load_workbook
-from openpyxl.worksheet.table import Table, TableStyleInfo
-from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
-from openpyxl.utils import get_column_letter
 from datetime import datetime
+
+from openpyxl import Workbook, load_workbook
+from openpyxl.styles import Font
+from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
+from openpyxl.worksheet.table import Table, TableStyleInfo
+
 from pasien.models import Pasien
 from referensi.models import Penyakit, Puskesmas
 
@@ -11,13 +14,17 @@ def generate_import_template():
     workbook = Workbook()
     worksheet = workbook.active
 
+    worksheet['A1'] = 'Template Import Pasien'
+    worksheet['A1'].font = Font(size=20)
+
     headers = [
         "Nomor Seri",
         "Puskesmas",
         "Penyakit",
         "Nama",
         "Nomor Identitas",
-        "Tipe Identitas" "Tempat Lahir",
+        "Tipe Identitas",
+        "Tempat Lahir",
         "Tanggal Lahir",
         "Jenis Kelamin",
         "Alamat",
@@ -27,7 +34,8 @@ def generate_import_template():
         "Nomor Telepon Keluarga",
     ]
 
-    worksheet.append(headers)
+    worksheet.move_range("A2:N2", rows=1, cols=1)
+    worksheet.append(headers) 
 
     dim_holder = DimensionHolder(worksheet=worksheet)
 
@@ -38,7 +46,7 @@ def generate_import_template():
 
     worksheet.column_dimensions = dim_holder
 
-    tab = Table(displayName="Table1", ref="A1:N2")
+    tab = Table(displayName="Table1", ref="A3:N4")
     style = TableStyleInfo(
         name="TableStyleLight8",
         showFirstColumn=False,
@@ -57,7 +65,7 @@ def import_pasien(file):
 
     worksheet = worksheet.active
 
-    if worksheet["A1"].value != "Nomor Seri":
+    if worksheet["A1"].value != "Template Import Pasien":
         raise Exception("Invalid file, please check again!")
 
     puskemas_list = Puskesmas.objects.all()
@@ -67,9 +75,9 @@ def import_pasien(file):
 
     new_patients = []
     for row in worksheet.iter_rows(
-        min_row=2, min_col=1, max_row=worksheet.max_row, max_col=worksheet.max_column
+        min_row=4, min_col=1, max_row=worksheet.max_row, max_col=worksheet.max_column
     ):
-        date_of_birth = now - row[6].value
+        date_of_birth = now - row[7].value
         years = date_of_birth.total_seconds() / (365.242 * 24 * 3600)
         tahun = int(years)
 
@@ -78,27 +86,39 @@ def import_pasien(file):
 
         umur = f"{tahun} tahun {bulan} bulan"
 
-        puskemas = puskemas_list.get(puskesmas=row[1].value)
+        puskesmas = puskemas_list.get(puskesmas=row[1].value)
+        penyakit = penyakit_list.get(nama=row[2].value)
 
         new_patients.append(
             Pasien(
                 nomor_seri=row[0].value,
-                puskemas=puskemas,
-                penyakit=penyakit_list.get(nama=row[2].value),
+                puskesmas=puskesmas,
+                penyakit=penyakit,
                 nama=row[3].value,
                 nomor_identitas=row[4].value,
                 tipe_identitas=row[5].value,
-                tempat_lahir=row[5].value,
-                tanggal_lahir=row[6].value,
+                tempat_lahir=row[6].value,
+                tanggal_lahir=row[7].value,
                 umur=umur,
-                jenis_kelamin=row[7].value,
-                alamat=row[8].value,
-                daerah=row[9].value,
-                pulau=puskemas.pulau,
-                nomor_telepon=row[10].value,
-                nama_keluarga=row[11].value,
-                nomor_telepon_keluarga=row[12].value,
+                jenis_kelamin=row[8].value,
+                alamat=row[9].value,
+                daerah=row[10].value,
+                pulau=puskesmas.pulau,
+                nomor_telepon=row[11].value,
+                nama_keluarga=row[12].value,
+                nomor_telepon_keluarga=row[13].value,
+                diagnosa = penyakit.pk
             )
         )
 
     Pasien.objects.bulk_create(new_patients)
+
+
+def update_penyakit(pasien: Pasien, penyakit: str):
+    pasien.penyakit_id = penyakit
+    pasien.diagnosa = penyakit
+    pasien.save()
+
+def update_diagnosa(pasien: Pasien, diagnosa: str):
+    pasien.diagnosa = diagnosa
+    pasien.save()
