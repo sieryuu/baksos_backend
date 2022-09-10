@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
+from common.views import UserViewSet
 
 from pasien.views import (DetailPasienViewSet, PasienViewSet,
                           ScreeningPasienViewSet)
@@ -28,6 +29,9 @@ router.register(r'detail-pasien', DetailPasienViewSet)
 router.register(r'screening-pasien', ScreeningPasienViewSet)
 router.register(r'puskesmas', PuskesmasViewSet)
 router.register(r'penyakit', PenyakitViewSet)
+
+router.register(r'user', UserViewSet)
+
 
 
 urlpatterns = [

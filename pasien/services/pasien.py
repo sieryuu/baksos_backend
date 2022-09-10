@@ -14,8 +14,8 @@ def generate_import_template():
     workbook = Workbook()
     worksheet = workbook.active
 
-    worksheet['A1'] = 'Template Import Pasien'
-    worksheet['A1'].font = Font(size=20)
+    worksheet["A1"] = "Template Import Pasien"
+    worksheet["A1"].font = Font(size=20)
 
     headers = [
         "Nomor Seri",
@@ -35,7 +35,7 @@ def generate_import_template():
     ]
 
     worksheet.move_range("A2:N2", rows=1, cols=1)
-    worksheet.append(headers) 
+    worksheet.append(headers)
 
     dim_holder = DimensionHolder(worksheet=worksheet)
 
@@ -107,7 +107,7 @@ def import_pasien(file):
                 nomor_telepon=row[11].value,
                 nama_keluarga=row[12].value,
                 nomor_telepon_keluarga=row[13].value,
-                diagnosa = penyakit.pk
+                diagnosa=penyakit.pk,
             )
         )
 
@@ -118,6 +118,7 @@ def update_penyakit(pasien: Pasien, penyakit: str):
     pasien.penyakit_id = penyakit
     pasien.diagnosa = penyakit
     pasien.save()
+
 
 def update_diagnosa(pasien: Pasien, diagnosa: str):
     pasien.diagnosa = diagnosa
