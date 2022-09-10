@@ -68,7 +68,7 @@ def import_pasien(file):
     if worksheet["A1"].value != "Template Import Pasien":
         raise Exception("Invalid file, please check again!")
 
-    puskemas_list = Puskesmas.objects.all()
+    puskesmas_list = Puskesmas.objects.all()
     penyakit_list = Penyakit.objects.all()
 
     now = datetime.now()
@@ -86,7 +86,7 @@ def import_pasien(file):
 
         umur = f"{tahun} tahun {bulan} bulan"
 
-        puskesmas = puskemas_list.get(puskesmas=row[1].value)
+        puskesmas = puskesmas_list.get(puskesmas=row[1].value)
         penyakit = penyakit_list.get(nama=row[2].value)
 
         new_patients.append(
