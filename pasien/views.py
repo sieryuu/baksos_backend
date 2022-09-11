@@ -4,6 +4,7 @@ from openpyxl.writer.excel import save_virtual_workbook
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from pasien.filters import PasienFilterset
 
 from pasien.models import DetailPasien, Pasien, ScreeningPasien
 from pasien.serializer import (
@@ -29,6 +30,7 @@ class PasienViewSet(viewsets.ModelViewSet):
     serializer_class = PasienSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = "__all__"
+    filterset_class = PasienFilterset
 
     @action(detail=False, methods=["get"])
     def template(self, request, pk=None):
