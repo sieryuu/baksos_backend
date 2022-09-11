@@ -6,12 +6,17 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from pasien.models import DetailPasien, Pasien, ScreeningPasien
-from pasien.serializer import (CapKehadiranKartuKuningSerializer,
-                               CapKehadiranLabSerializer,
-                               CapKehadiranRadiologiSerializer,
-                               CapKehadiranSerializer, DetailPasienSerializer,
-                               ImportPasienSerializer, KartuKuningSerializer,
-                               PasienSerializer, ScreeningPasienSerializer)
+from pasien.serializer import (
+    CapKehadiranKartuKuningSerializer,
+    CapKehadiranLabSerializer,
+    CapKehadiranRadiologiSerializer,
+    CapKehadiranSerializer,
+    DetailPasienSerializer,
+    ImportPasienSerializer,
+    KartuKuningSerializer,
+    PasienSerializer,
+    ScreeningPasienSerializer,
+)
 from pasien.services import pasien as PasienService
 from pasien.services import screening_pasien as ScreeningPasienService
 from django_filters import rest_framework as filters
@@ -21,7 +26,7 @@ class PasienViewSet(viewsets.ModelViewSet):
     queryset = Pasien.objects.all()
     serializer_class = PasienSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = '__all__'
+    filterset_fields = "__all__"
 
     @action(detail=False, methods=["get"])
     def template(self, request, pk=None):
@@ -73,18 +78,35 @@ class PasienViewSet(viewsets.ModelViewSet):
             f"Diagnosa pasien {pasien.nama} sudah diperbaharui menjadi {diagnosa}!"
         )
 
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
+    def serah_nomor_antrian(self, request, pk=None):
+        pasien = self.get_object()
+
+        nomor_antrian = request.data.get("nomor_antrian")
+
+        if nomor_antrian is None:
+            raise Exception("Nomor antrian kosong!")
+
+        PasienService.serah_nomor_antrian(pasien=pasien, nomor_antrian=nomor_antrian)
+
+        return Response(
+            f"Pasien {pasien.nama} sudah diserahkan nomor antrian {nomor_antrian}!"
+        )
+
 
 class DetailPasienViewSet(viewsets.ModelViewSet):
     queryset = DetailPasien.objects.all()
     serializer_class = DetailPasienSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = '__all__'
+    filterset_fields = "__all__"
+
 
 class ScreeningPasienViewSet(viewsets.ModelViewSet):
     queryset = ScreeningPasien.objects.all()
     serializer_class = ScreeningPasienSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = '__all__'
+    filterset_fields = "__all__"
 
     @transaction.atomic
     @action(detail=False, methods=["post"])

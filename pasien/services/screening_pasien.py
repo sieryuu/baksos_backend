@@ -85,8 +85,14 @@ def hadir_ekg(kehadiran: bool, pasien_id: int):
     pasien.save()
 
 
-
-def hadir_kartu_kuning(kehadiran: bool, pasien_id: int, status: str, tanggal: date, jam: time, perhatian: list):
+def hadir_kartu_kuning(
+    kehadiran: bool,
+    pasien_id: int,
+    status: str,
+    tanggal: date,
+    jam: time,
+    perhatian: list,
+):
     pasien: Pasien = Pasien.objects.get(id=pasien_id)
     screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
     screening_pasien.telah_lewat_cek_kartu_kuning = kehadiran
@@ -108,13 +114,14 @@ def hadir_kartu_kuning(kehadiran: bool, pasien_id: int, status: str, tanggal: da
 
     return kartu_kuning
 
+
 def __generate_nomor_kartu_kuning():
-    prefix = 'KK'
+    prefix = "KK"
     running_no = 1
-    last_record = KartuKuning.objects.all().order_by('-nomor').first()
+    last_record = KartuKuning.objects.all().order_by("-nomor").first()
 
     if last_record:
         last_running_no = int(last_record.nomor[-4:])
         running_no = running_no + last_running_no
-    
+
     return prefix + str(running_no).zfill(4)

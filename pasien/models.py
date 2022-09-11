@@ -3,13 +3,16 @@ from typing import Iterable, Optional
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models import UniqueConstraint
+from common.models import CrudModel, CrudModelManager
 
 from referensi.models import Penyakit, Puskesmas
 
+class PasienManager(CrudModelManager):
+    pass
 
 # Create your models here.
-class Pasien(models.Model):
-    nomor_seri = models.CharField(max_length=20)
+class Pasien(CrudModel):
+    nomor_seri = models.CharField(max_length=20, unique=True)
     puskesmas = models.ForeignKey(Puskesmas, on_delete=models.CASCADE)
     penyakit = models.ForeignKey(Penyakit, on_delete=models.CASCADE)
     nama = models.CharField(max_length=50)
@@ -29,12 +32,12 @@ class Pasien(models.Model):
     perlu_radiologi = models.BooleanField(default=False)
     perlu_ekg = models.BooleanField(default=False)
     diagnosa = models.CharField(max_length=50, null=True)
-    nomor_antrian = models.PositiveSmallIntegerField(null=True)
+    nomor_antrian = models.CharField(max_length=10, null=True)
     tanggal_nomor_antrian = models.DateTimeField(null=True)
-    telah_daftar = models.BooleanField(default=False)
-    jam_daftar = models.DateTimeField(null=True)
     last_status = models.CharField(max_length=30, null=True)
     komentar = models.CharField(max_length=255, null=True)
+
+    objects = PasienManager() 
 
     class Meta:
         constraints = [
@@ -53,10 +56,10 @@ class Pasien(models.Model):
         if self.nomor_antrian and self.tanggal_nomor_antrian:
             if Pasien.objects.filter(
                 nomor_antrian=self.nomor_antrian,
-                penyakit=self.penyakit,
-                tanggal_nomor_antrian__date=self.tanggal_nomor_antrian.date,
+                penyakit__grup=self.penyakit.grup,
+                tanggal_nomor_antrian__date=self.tanggal_nomor_antrian.date(),
             ):
-                raise Exception("Nomor antrian duplikat!")
+                raise Exception(f"Nomor antrian {self.penyakit.nama}/{self.nomor_antrian} duplikat!")
 
         if self.pk is None:
             self.diagnosa = self.penyakit.pk
@@ -64,7 +67,7 @@ class Pasien(models.Model):
         return super().save(force_insert, force_update, using, update_fields)
 
 
-class ScreeningPasien(models.Model):
+class ScreeningPasien(CrudModel):
     pasien = models.OneToOneField(Pasien, on_delete=models.CASCADE)
     telah_lewat_cek_tensi = models.BooleanField(null=True)
     jam_cek_tensi = models.DateTimeField(null=True)
@@ -89,7 +92,7 @@ class ScreeningPasien(models.Model):
     nomor_kartu_kuning = models.CharField(max_length=20)
 
 
-class DetailPasien(models.Model):
+class DetailPasien(CrudModel):
     tensi = models.CharField(max_length=100)
     HB = models.CharField(max_length=100)
     LEUCO = models.CharField(max_length=100)
@@ -104,7 +107,7 @@ class DetailPasien(models.Model):
     HIV = models.CharField(max_length=100)
 
 
-class KartuKuning(models.Model):
+class KartuKuning(CrudModel):
     pasien = models.OneToOneField(Pasien, on_delete=models.CASCADE)
     nomor = models.CharField(max_length=10)
     tanggal_operasi = models.DateField(null=True)

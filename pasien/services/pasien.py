@@ -114,6 +114,13 @@ def import_pasien(file):
     Pasien.objects.bulk_create(new_patients)
 
 
+def serah_nomor_antrian(pasien: Pasien, nomor_antrian: str):
+    pasien.nomor_antrian = nomor_antrian
+    pasien.tanggal_nomor_antrian = datetime.now()
+    pasien.last_status = "DAFTAR"
+    pasien.save()
+
+
 def update_penyakit(pasien: Pasien, penyakit: str):
     pasien.penyakit_id = penyakit
     pasien.diagnosa = penyakit
