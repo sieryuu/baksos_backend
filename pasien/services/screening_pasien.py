@@ -6,6 +6,7 @@ from crum import get_current_user
 
 from pasien.models import KartuKuning, Pasien, ScreeningPasien
 
+from django.core.exceptions import ValidationError
 
 def hadir_tensi(kehadiran: bool, pasien_id: int):
     pasien: Pasien = Pasien.objects.get(id=pasien_id)
@@ -63,7 +64,7 @@ def hadir_radiologi(
     screening_pasien.tipe_hasil_rontgen = tipe_hasil_rontgen
 
     if tipe_hasil_rontgen == "USB" and nomor_kertas_penyerahan is None:
-        raise Exception("Nomor kertas penyerahan kosong!")
+        raise ValidationError("Nomor kertas penyerahan kosong!")
 
     screening_pasien.nomor_kertas_penyerahan = nomor_kertas_penyerahan
     screening_pasien.petugas_cek_radiologi = get_current_user().username

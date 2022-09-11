@@ -20,6 +20,8 @@ from pasien.serializer import (
 from pasien.services import pasien as PasienService
 from pasien.services import screening_pasien as ScreeningPasienService
 from django_filters import rest_framework as filters
+from django.core.exceptions import ValidationError
+from rest_framework import status
 
 # Create your views here.
 class PasienViewSet(viewsets.ModelViewSet):
@@ -50,6 +52,8 @@ class PasienViewSet(viewsets.ModelViewSet):
                 content="Import File Sukses!",
             )
             return response
+        except ValidationError as ex:
+            raise ex
         except Exception as ex:
             raise ex
 
@@ -81,18 +85,23 @@ class PasienViewSet(viewsets.ModelViewSet):
     @transaction.atomic
     @action(detail=True, methods=["post"])
     def serah_nomor_antrian(self, request, pk=None):
-        pasien = self.get_object()
+        try:
+            pasien = self.get_object()
 
-        nomor_antrian = request.data.get("nomor_antrian")
+            nomor_antrian = request.data.get("nomor_antrian")
 
-        if nomor_antrian is None:
-            raise Exception("Nomor antrian kosong!")
+            if nomor_antrian is None:
+                raise ValidationError("Nomor antrian kosong!")
 
-        PasienService.serah_nomor_antrian(pasien=pasien, nomor_antrian=nomor_antrian)
+            PasienService.serah_nomor_antrian(pasien=pasien, nomor_antrian=nomor_antrian)
 
-        return Response(
-            f"Pasien {pasien.nama} sudah diserahkan nomor antrian {nomor_antrian}!"
-        )
+            return Response(
+                f"Pasien {pasien.nama} sudah diserahkan nomor antrian {nomor_antrian}!"
+            )
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class DetailPasienViewSet(viewsets.ModelViewSet):
@@ -111,103 +120,133 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
     @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_cek_tensi(self, request, pk=None):
-        serializer = CapKehadiranSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        kehadiran = serializer.validated_data["hadir"]
-        pasien_id = serializer.validated_data["pasien_id"]
+        try:
+            serializer = CapKehadiranSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            kehadiran = serializer.validated_data["hadir"]
+            pasien_id = serializer.validated_data["pasien_id"]
 
-        ScreeningPasienService.hadir_tensi(kehadiran=kehadiran, pasien_id=pasien_id)
+            ScreeningPasienService.hadir_tensi(kehadiran=kehadiran, pasien_id=pasien_id)
 
-        return Response("Berhasil mencatat kehadiran Tensi!")
+            return Response("Berhasil mencatat kehadiran Tensi!")
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_pemeriksaan(self, request, pk=None):
-        serializer = CapKehadiranSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        kehadiran = serializer.validated_data["hadir"]
-        pasien_id = serializer.validated_data["pasien_id"]
+        try:
+            serializer = CapKehadiranSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            kehadiran = serializer.validated_data["hadir"]
+            pasien_id = serializer.validated_data["pasien_id"]
 
-        ScreeningPasienService.hadir_pemeriksaan(
-            kehadiran=kehadiran, pasien_id=pasien_id
-        )
+            ScreeningPasienService.hadir_pemeriksaan(
+                kehadiran=kehadiran, pasien_id=pasien_id
+            )
 
-        return Response("Berhasil mencatat kehadiran Pemeriksaan!")
+            return Response("Berhasil mencatat kehadiran Pemeriksaan!")
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_lab(self, request, pk=None):
-        serializer = CapKehadiranLabSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        kehadiran = serializer.validated_data["hadir"]
-        perlu_ekg = serializer.validated_data["perlu_ekg"]
-        perlu_radiologi = serializer.validated_data["perlu_radiologi"]
-        pasien_id = serializer.validated_data["pasien_id"]
+        try:
+            serializer = CapKehadiranLabSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            kehadiran = serializer.validated_data["hadir"]
+            perlu_ekg = serializer.validated_data["perlu_ekg"]
+            perlu_radiologi = serializer.validated_data["perlu_radiologi"]
+            pasien_id = serializer.validated_data["pasien_id"]
 
-        ScreeningPasienService.hadir_lab(
-            kehadiran=kehadiran,
-            pasien_id=pasien_id,
-            perlu_ekg=perlu_ekg,
-            perlu_radiologi=perlu_radiologi,
-        )
+            ScreeningPasienService.hadir_lab(
+                kehadiran=kehadiran,
+                pasien_id=pasien_id,
+                perlu_ekg=perlu_ekg,
+                perlu_radiologi=perlu_radiologi,
+            )
 
-        return Response("Berhasil mencatat kehadiran Lab!")
+            return Response("Berhasil mencatat kehadiran Lab!")
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_radiologi(self, request, pk=None):
-        serializer = CapKehadiranRadiologiSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        kehadiran = serializer.validated_data["hadir"]
-        tipe_hasil_rontgen = serializer.validated_data["tipe_hasil_rontgen"]
-        nomor_kertas_penyerahan = serializer.validated_data.get(
-            "nomor_kertas_penyerahan"
-        )
-        pasien_id = serializer.validated_data["pasien_id"]
+        try:
+            serializer = CapKehadiranRadiologiSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            kehadiran = serializer.validated_data["hadir"]
+            tipe_hasil_rontgen = serializer.validated_data["tipe_hasil_rontgen"]
+            nomor_kertas_penyerahan = serializer.validated_data.get(
+                "nomor_kertas_penyerahan"
+            )
+            pasien_id = serializer.validated_data["pasien_id"]
 
-        ScreeningPasienService.hadir_radiologi(
-            kehadiran=kehadiran,
-            pasien_id=pasien_id,
-            tipe_hasil_rontgen=tipe_hasil_rontgen,
-            nomor_kertas_penyerahan=nomor_kertas_penyerahan,
-        )
+            ScreeningPasienService.hadir_radiologi(
+                kehadiran=kehadiran,
+                pasien_id=pasien_id,
+                tipe_hasil_rontgen=tipe_hasil_rontgen,
+                nomor_kertas_penyerahan=nomor_kertas_penyerahan,
+            )
 
-        return Response("Berhasil mencatat kehadiran Radiologi!")
+            return Response("Berhasil mencatat kehadiran Radiologi!")
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_ekg(self, request, pk=None):
-        serializer = CapKehadiranSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        kehadiran = serializer.validated_data["hadir"]
-        pasien_id = serializer.validated_data["pasien_id"]
+        try:
+            serializer = CapKehadiranSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            kehadiran = serializer.validated_data["hadir"]
+            pasien_id = serializer.validated_data["pasien_id"]
 
-        ScreeningPasienService.hadir_ekg(kehadiran=kehadiran, pasien_id=pasien_id)
+            ScreeningPasienService.hadir_ekg(kehadiran=kehadiran, pasien_id=pasien_id)
 
-        return Response("Berhasil mencatat kehadiran EKG!")
+            return Response("Berhasil mencatat kehadiran EKG!")
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_kartu_kuning(self, request, pk=None):
-        serializer = CapKehadiranKartuKuningSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        kehadiran = serializer.validated_data["hadir"]
-        pasien_id = serializer.validated_data["pasien_id"]
-        status = serializer.validated_data["status"]
+        try:
+            serializer = CapKehadiranKartuKuningSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            kehadiran = serializer.validated_data["hadir"]
+            pasien_id = serializer.validated_data["pasien_id"]
+            status = serializer.validated_data["status"]
 
-        tanggal = serializer.validated_data.get("tanggal")
-        jam = serializer.validated_data.get("jam")
-        perhatian = serializer.validated_data.get("perhatian")
+            tanggal = serializer.validated_data.get("tanggal")
+            jam = serializer.validated_data.get("jam")
+            perhatian = serializer.validated_data.get("perhatian")
 
-        kartu_kuning = ScreeningPasienService.hadir_kartu_kuning(
-            kehadiran=kehadiran,
-            pasien_id=pasien_id,
-            status=status,
-            tanggal=tanggal,
-            jam=jam,
-            perhatian=perhatian,
-        )
+            kartu_kuning = ScreeningPasienService.hadir_kartu_kuning(
+                kehadiran=kehadiran,
+                pasien_id=pasien_id,
+                status=status,
+                tanggal=tanggal,
+                jam=jam,
+                perhatian=perhatian,
+            )
 
-        serializer = KartuKuningSerializer(kartu_kuning)
+            serializer = KartuKuningSerializer(kartu_kuning)
 
-        return Response(serializer.data)
+            return Response(serializer.data)
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

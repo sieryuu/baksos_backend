@@ -9,6 +9,7 @@ from openpyxl.worksheet.table import Table, TableStyleInfo
 from pasien.models import Pasien
 from referensi.models import Penyakit, Puskesmas
 
+from django.core.exceptions import ValidationError
 
 def generate_import_template():
     workbook = Workbook()
@@ -66,7 +67,7 @@ def import_pasien(file):
     worksheet = worksheet.active
 
     if worksheet["A1"].value != "Template Import Pasien":
-        raise Exception("Invalid file, please check again!")
+        raise ValidationError("Invalid file, please check again!")
 
     puskesmas_list = Puskesmas.objects.all()
     penyakit_list = Penyakit.objects.all()
