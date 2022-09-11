@@ -14,12 +14,14 @@ from pasien.serializer import (CapKehadiranKartuKuningSerializer,
                                PasienSerializer, ScreeningPasienSerializer)
 from pasien.services import pasien as PasienService
 from pasien.services import screening_pasien as ScreeningPasienService
-
+from django_filters import rest_framework as filters
 
 # Create your views here.
 class PasienViewSet(viewsets.ModelViewSet):
     queryset = Pasien.objects.all()
     serializer_class = PasienSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = '__all__'
 
     @action(detail=False, methods=["get"])
     def template(self, request, pk=None):
@@ -75,11 +77,14 @@ class PasienViewSet(viewsets.ModelViewSet):
 class DetailPasienViewSet(viewsets.ModelViewSet):
     queryset = DetailPasien.objects.all()
     serializer_class = DetailPasienSerializer
-
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = '__all__'
 
 class ScreeningPasienViewSet(viewsets.ModelViewSet):
     queryset = ScreeningPasien.objects.all()
     serializer_class = ScreeningPasienSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = '__all__'
 
     @transaction.atomic
     @action(detail=False, methods=["post"])

@@ -116,6 +116,17 @@ beautifulsoup4 = "*"
 django = ">=2.2,<5.0"
 
 [[package]]
+name = "django-filter"
+version = "22.1"
+description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+Django = ">=3.2"
+
+[[package]]
 name = "djangorestframework"
 version = "3.13.1"
 description = "Web APIs for Django, made easy."
@@ -231,7 +242,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "995fdeda220fb1bd6db0d6cbbbbc9c4366f8b28aaa0d0c0f1a8da815c69bbf4d"
+content-hash = "1b6ca3b61ac31478a8ed28de5c26a9544f22d29c1d1b5ae98c15cd2ff225880a"
 
 [metadata.files]
 asgiref = [
@@ -290,6 +301,10 @@ django-crum = [
 django-easy-audit = [
     {file = "django-easy-audit-1.3.3.tar.gz", hash = "sha256:109bc92c677577623e460f069ec2fa5f30ec3b8b1591752786b9a5e7bc01bff1"},
     {file = "django_easy_audit-1.3.3-py3-none-any.whl", hash = "sha256:4b98262df68adbb2351a1b2b31e8c657317d78b0d3cfe4162f5c1fb79c846bfc"},
+]
+django-filter = [
+    {file = "django-filter-22.1.tar.gz", hash = "sha256:ed473b76e84f7e83b2511bb2050c3efb36d135207d0128dfe3ae4b36e3594ba5"},
+    {file = "django_filter-22.1-py3-none-any.whl", hash = "sha256:ed429e34760127e3520a67f415bec4c905d4649fbe45d0d6da37e6ff5e0287eb"},
 ]
 djangorestframework = [
     {file = "djangorestframework-3.13.1-py3-none-any.whl", hash = "sha256:24c4bf58ed7e85d1fe4ba250ab2da926d263cd57d64b03e8dcef0ac683f8b1aa"},
