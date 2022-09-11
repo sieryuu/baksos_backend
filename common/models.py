@@ -1,8 +1,7 @@
-from datetime import datetime
 from typing import Iterable, Optional
 from django.db import models
 from crum import get_current_user
-
+from django.utils import timezone
 # Create your models here.
 
 
@@ -11,9 +10,9 @@ class CrudModelManager(models.Manager):
         current_user = get_current_user().username
         for obj in objs:
             obj.dibuat_oleh = current_user
-            obj.waktu_dibuat = datetime.now()
+            obj.waktu_dibuat = timezone.now()
             obj.diperbaharui_oleh = current_user
-            obj.waktu_diperbaharui = datetime.now()
+            obj.waktu_diperbaharui = timezone.now()
         return super().bulk_create(objs, batch_size, ignore_conflicts)
 
 

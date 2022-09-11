@@ -10,6 +10,7 @@ from pasien.models import Pasien
 from referensi.models import Penyakit, Puskesmas
 
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 def generate_import_template():
     workbook = Workbook()
@@ -72,7 +73,7 @@ def import_pasien(file):
     puskesmas_list = Puskesmas.objects.all()
     penyakit_list = Penyakit.objects.all()
 
-    now = datetime.now()
+    now = timezone.now()
 
     new_patients = []
     for row in worksheet.iter_rows(
@@ -117,7 +118,7 @@ def import_pasien(file):
 
 def serah_nomor_antrian(pasien: Pasien, nomor_antrian: str):
     pasien.nomor_antrian = nomor_antrian
-    pasien.tanggal_nomor_antrian = datetime.now()
+    pasien.tanggal_nomor_antrian = timezone.now()
     pasien.last_status = "DAFTAR"
     pasien.save()
 

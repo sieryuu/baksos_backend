@@ -1,7 +1,7 @@
 from cmath import tan
 from datetime import date, datetime
 from time import time
-
+from django.utils import timezone
 from crum import get_current_user
 
 from pasien.models import KartuKuning, Pasien, ScreeningPasien
@@ -13,7 +13,7 @@ def hadir_tensi(kehadiran: bool, pasien_id: int):
 
     screening_pasien, created = ScreeningPasien.objects.get_or_create(pasien=pasien)
     screening_pasien.telah_lewat_cek_tensi = kehadiran
-    screening_pasien.jam_cek_tensi = datetime.now()
+    screening_pasien.jam_cek_tensi = timezone.now()
     screening_pasien.petugas_cek_tensi = get_current_user().username
     pasien.last_status = "TENSI"
 
@@ -27,7 +27,7 @@ def hadir_pemeriksaan(kehadiran: bool, pasien_id: int):
     screening_pasien, created = ScreeningPasien.objects.get_or_create(pasien=pasien)
 
     screening_pasien.telah_lewat_pemeriksaan = kehadiran
-    screening_pasien.jam_pemeriksaan = datetime.now()
+    screening_pasien.jam_pemeriksaan = timezone.now()
     screening_pasien.petugas_pemeriksaaan = get_current_user().username
     pasien.last_status = "PEMERIKSAAN"
 
@@ -40,7 +40,7 @@ def hadir_lab(kehadiran: bool, pasien_id: int, perlu_ekg: bool, perlu_radiologi:
 
     screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
     screening_pasien.telah_lewat_cek_lab = kehadiran
-    screening_pasien.jam_cek_lab = datetime.now()
+    screening_pasien.jam_cek_lab = timezone.now()
     screening_pasien.petugas_cek_lab = get_current_user().username
     screening_pasien.save()
 
@@ -60,7 +60,7 @@ def hadir_radiologi(
 
     screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
     screening_pasien.telah_lewat_cek_radiologi = kehadiran
-    screening_pasien.jam_cek_radiologi = datetime.now()
+    screening_pasien.jam_cek_radiologi = timezone.now()
     screening_pasien.tipe_hasil_rontgen = tipe_hasil_rontgen
 
     if tipe_hasil_rontgen == "USB" and nomor_kertas_penyerahan is None:
@@ -78,7 +78,7 @@ def hadir_ekg(kehadiran: bool, pasien_id: int):
     pasien: Pasien = Pasien.objects.get(id=pasien_id)
     screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
     screening_pasien.telah_lewat_cek_ekg = kehadiran
-    screening_pasien.jam_cek_ekg = datetime.now()
+    screening_pasien.jam_cek_ekg = timezone.now()
     screening_pasien.petugas_cek_ekg = get_current_user().username
     screening_pasien.save()
 
@@ -97,7 +97,7 @@ def hadir_kartu_kuning(
     pasien: Pasien = Pasien.objects.get(id=pasien_id)
     screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
     screening_pasien.telah_lewat_cek_kartu_kuning = kehadiran
-    screening_pasien.jam_cek_kartu_kuning = datetime.now()
+    screening_pasien.jam_cek_kartu_kuning = timezone.now()
     screening_pasien.petugas_cek_kartu_kuning = get_current_user().username
     screening_pasien.save()
 
