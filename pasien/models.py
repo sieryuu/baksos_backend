@@ -58,7 +58,7 @@ class Pasien(CrudModel):
                 nomor_antrian=self.nomor_antrian,
                 penyakit__grup=self.penyakit.grup,
                 tanggal_nomor_antrian__date=self.tanggal_nomor_antrian.date(),
-            ):
+            ).exclude(pk=self.pk).exists():
                 raise Exception(f"Nomor antrian {self.penyakit.nama}/{self.nomor_antrian} duplikat!")
 
         if self.pk is None:
