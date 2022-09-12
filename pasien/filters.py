@@ -3,6 +3,10 @@ from .models import Pasien
 
 
 class PasienFilterset(filters.FilterSet):
+    tanggal_antri = filters.DateTimeFromToRangeFilter(
+        field_name="tanggal_nomor_antrian"
+    )
+
     class Meta:
         model = Pasien
         fields = {
