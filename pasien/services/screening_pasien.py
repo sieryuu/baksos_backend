@@ -26,6 +26,10 @@ def hadir_pemeriksaan(kehadiran: bool, pasien_id: int):
 
     screening_pasien, created = ScreeningPasien.objects.get_or_create(pasien=pasien)
 
+    if kehadiran:
+        screening_pasien.telah_lewat_cek_tensi = kehadiran
+        screening_pasien.jam_cek_tensi = timezone.now()
+        screening_pasien.petugas_cek_tensi = get_current_user().username
     screening_pasien.telah_lewat_pemeriksaan = kehadiran
     screening_pasien.jam_pemeriksaan = timezone.now()
     screening_pasien.petugas_pemeriksaaan = get_current_user().username
