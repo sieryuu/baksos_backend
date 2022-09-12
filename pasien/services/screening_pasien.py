@@ -1,4 +1,5 @@
 from cmath import tan
+from contextlib import nullcontext
 from datetime import date, datetime
 from time import time
 from django.utils import timezone
@@ -7,6 +8,7 @@ from crum import get_current_user
 from pasien.models import KartuKuning, Pasien, ScreeningPasien
 
 from django.core.exceptions import ValidationError
+
 
 def hadir_tensi(kehadiran: bool, pasien_id: int):
     pasien: Pasien = Pasien.objects.get(id=pasien_id)
@@ -118,6 +120,52 @@ def hadir_kartu_kuning(
     kartu_kuning.save()
 
     return kartu_kuning
+
+
+def batal_pemeriksaan(screening: ScreeningPasien):
+    screening.telah_lewat_pemeriksaan = None
+    screening.jam_pemeriksaan = None
+    screening.petugas_pemeriksaaan = None
+    screening.save()
+
+
+def batal_lab(screening: ScreeningPasien):
+    screening.telah_lewat_cek_lab = None
+    screening.jam_cek_lab = None
+    screening.petugas_cek_lab = None
+    screening.save()
+
+    pasien: Pasien = screening.pasien
+    pasien.perlu_ekg = False
+    pasien.perlu_radiologi = False
+    pasien.save()
+
+
+def batal_radiologi(screening: ScreeningPasien):
+    screening.telah_lewat_cek_radiologi = None
+    screening.jam_cek_radiologi = None
+    screening.petugas_cek_radiologi = None
+    screening.tipe_hasil_rontgen = None
+    screening.nomor_kertas_penyerahan = None
+    screening.save()
+
+
+def batal_ekg(screening: ScreeningPasien):
+    screening.telah_lewat_cek_ekg = None
+    screening.jam_cek_ekg = None
+    screening.petugas_cek_ekg = None
+    screening.save()
+
+
+def batal_kartu_kuning(screening: ScreeningPasien):
+    screening.telah_lewat_cek_kartu_kuning = None
+    screening.jam_cek_kartu_kuning = None
+    screening.petugas_cek_kartu_kuning = None
+    screening.save()
+
+    kartu_kuning: KartuKuning = KartuKuning.objects.get(pasien=screening.pasien)
+    kartu_kuning.status = "BATAL"
+    kartu_kuning.save()
 
 
 def __generate_nomor_kartu_kuning():

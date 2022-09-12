@@ -2,6 +2,7 @@ from typing import Iterable, Optional
 from django.db import models
 from crum import get_current_user
 from django.utils import timezone
+from django.contrib.auth.mixins import UserPassesTestMixin
 # Create your models here.
 
 
@@ -38,3 +39,13 @@ class CrudModel(models.Model):
         self.dibuat_oleh = current_user
         self.diperbaharui_oleh = current_user
         return super().save(force_insert, force_update, using, update_fields)
+
+
+# def superuser_required():
+#     def wrapper(wrapped):
+#         class WrappedClass(UserPassesTestMixin, wrapped):
+#             def test_func(self):
+#                 return self.request.user.is_superuser
+
+#         return WrappedClass
+#     return wrapper

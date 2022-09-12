@@ -23,6 +23,8 @@ from pasien.services import screening_pasien as ScreeningPasienService
 from django_filters import rest_framework as filters
 from django.core.exceptions import ValidationError
 from rest_framework import status
+from rest_framework.permissions import IsAdminUser
+from rest_framework.decorators import permission_classes
 
 # Create your views here.
 class PasienViewSet(viewsets.ModelViewSet):
@@ -95,7 +97,9 @@ class PasienViewSet(viewsets.ModelViewSet):
             if nomor_antrian is None:
                 raise ValidationError("Nomor antrian kosong!")
 
-            PasienService.serah_nomor_antrian(pasien=pasien, nomor_antrian=nomor_antrian)
+            PasienService.serah_nomor_antrian(
+                pasien=pasien, nomor_antrian=nomor_antrian
+            )
 
             return Response(
                 f"Pasien {pasien.nama} sudah diserahkan nomor antrian {nomor_antrian}!"
@@ -248,6 +252,81 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
             serializer = KartuKuningSerializer(kartu_kuning)
 
             return Response(serializer.data)
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @permission_classes((IsAdminUser,))
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
+    def batal_pemeriksaan(self, request, pk=None):
+        try:
+            screening = self.get_object()
+
+            ScreeningPasienService.batal_pemeriksaan(screening)
+
+            return Response("Pemeriksaan berhasil dibatalkan!")
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @permission_classes((IsAdminUser,))
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
+    def batal_lab(self, request, pk=None):
+        try:
+            screening = self.get_object()
+
+            ScreeningPasienService.batal_lab(screening)
+
+            return Response("Lab berhasil dibatalkan!")
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @permission_classes((IsAdminUser,))
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
+    def batal_radiologi(self, request, pk=None):
+        try:
+            screening = self.get_object()
+
+            ScreeningPasienService.batal_radiologi(screening)
+
+            return Response("Radiologi berhasil dibatalkan!")
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @permission_classes((IsAdminUser,))
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
+    def batal_ekg(self, request, pk=None):
+        try:
+            screening = self.get_object()
+
+            ScreeningPasienService.batal_ekg(screening)
+
+            return Response("EKG berhasil dibatalkan!")
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @permission_classes((IsAdminUser,))
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
+    def batal_kartu_kuning(self, request, pk=None):
+        try:
+            screening = self.get_object()
+
+            ScreeningPasienService.batal_kartu_kuning(screening)
+
+            return Response("Kartu Kuning berhasil dibatalkan!")
         except ValidationError as ex:
             raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
