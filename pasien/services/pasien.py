@@ -87,7 +87,7 @@ def import_pasien(file):
         months = (years - tahun) * 12
         bulan = int(months)
 
-        umur = f"{tahun} tahun {bulan} bulan"
+        umur = f"{tahun} Tahun {bulan} Bulan"
 
         puskesmas = puskesmas_list.get(puskesmas=row[1].value)
         penyakit = penyakit_list.get(nama=row[2].value)
