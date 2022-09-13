@@ -59,7 +59,7 @@ class PasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            raise ex
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=True, methods=["post"])
@@ -105,9 +105,9 @@ class PasienViewSet(viewsets.ModelViewSet):
                 f"Pasien {pasien.nama} sudah diserahkan nomor antrian {nomor_antrian}!"
             )
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class DetailPasienViewSet(viewsets.ModelViewSet):

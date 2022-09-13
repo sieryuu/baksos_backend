@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, tzinfo
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
@@ -11,6 +11,7 @@ from referensi.models import Penyakit, Puskesmas
 
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+
 
 def generate_import_template():
     workbook = Workbook()
@@ -73,7 +74,7 @@ def import_pasien(file):
     puskesmas_list = Puskesmas.objects.all()
     penyakit_list = Penyakit.objects.all()
 
-    now = timezone.now()
+    now = datetime.now()
 
     new_patients = []
     for row in worksheet.iter_rows(
