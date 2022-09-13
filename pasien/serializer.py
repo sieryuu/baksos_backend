@@ -50,7 +50,7 @@ class CapKehadiranLabSerializer(CapKehadiranSerializer):
     perlu_ekg = serializers.BooleanField()
 
 
-class CapKehadiranRadiologiSerializer(CapKehadiranSerializer):
+class HasilRadiologiSerializer(CapKehadiranSerializer):
     tipe_hasil_rontgen = serializers.CharField()
     nomor_kertas_penyerahan = serializers.CharField(required=False)
 
