@@ -58,26 +58,31 @@ def hadir_lab(kehadiran: bool, pasien_id: int, perlu_ekg: bool, perlu_radiologi:
 
 def hadir_radiologi(
     kehadiran: bool,
-    pasien_id: int,
-    tipe_hasil_rontgen: str,
-    nomor_kertas_penyerahan: str,
+    pasien_id: int
 ):
     pasien: Pasien = Pasien.objects.get(id=pasien_id)
 
     screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
     screening_pasien.telah_lewat_cek_radiologi = kehadiran
     screening_pasien.jam_cek_radiologi = timezone.now()
-    screening_pasien.tipe_hasil_rontgen = tipe_hasil_rontgen
-
-    if tipe_hasil_rontgen == "USB" and nomor_kertas_penyerahan is None:
-        raise ValidationError("Nomor kertas penyerahan kosong!")
-
-    screening_pasien.nomor_kertas_penyerahan = nomor_kertas_penyerahan
-    screening_pasien.petugas_cek_radiologi = get_current_user().username
     screening_pasien.save()
 
     pasien.last_status = "RADIOLOGI"
     pasien.save()
+
+def hasil_radiologi(
+    screening: ScreeningPasien,
+    tipe_hasil_rontgen: str,
+    nomor_kertas_penyerahan: str,
+):
+    if tipe_hasil_rontgen == "USB" and nomor_kertas_penyerahan is None:
+        raise ValidationError("Nomor kertas penyerahan kosong!")
+
+    screening.tipe_hasil_rontgen = tipe_hasil_rontgen
+    screening.nomor_kertas_penyerahan = nomor_kertas_penyerahan
+    screening.petugas_cek_radiologi = get_current_user().username
+    screening.save()
+
 
 
 def hadir_ekg(kehadiran: bool, pasien_id: int):

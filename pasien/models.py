@@ -109,7 +109,7 @@ class DetailPasien(CrudModel):
 
 class KartuKuning(CrudModel):
     pasien = models.OneToOneField(Pasien, on_delete=models.CASCADE)
-    nomor = models.CharField(max_length=10)
+    nomor = models.CharField(max_length=10, unique=True)
     tanggal_operasi = models.DateField(null=True)
     jam_operasi = models.TimeField(null=True)
     perhatian = ArrayField(models.CharField(max_length=50), null=True)
