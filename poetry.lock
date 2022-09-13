@@ -127,6 +127,17 @@ python-versions = ">=3.7"
 Django = ">=3.2"
 
 [[package]]
+name = "django-pivot"
+version = "1.9.0"
+description = "Create pivot tables and histograms from ORM querysets"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+django = ">=2.2.0"
+
+[[package]]
 name = "djangorestframework"
 version = "3.13.1"
 description = "Web APIs for Django, made easy."
@@ -242,7 +253,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "1b6ca3b61ac31478a8ed28de5c26a9544f22d29c1d1b5ae98c15cd2ff225880a"
+content-hash = "9fc0b9d99073aa95471ffe855f8c42675d0c253d42f58a1b0fe6a30c0607f7db"
 
 [metadata.files]
 asgiref = [
@@ -305,6 +316,10 @@ django-easy-audit = [
 django-filter = [
     {file = "django-filter-22.1.tar.gz", hash = "sha256:ed473b76e84f7e83b2511bb2050c3efb36d135207d0128dfe3ae4b36e3594ba5"},
     {file = "django_filter-22.1-py3-none-any.whl", hash = "sha256:ed429e34760127e3520a67f415bec4c905d4649fbe45d0d6da37e6ff5e0287eb"},
+]
+django-pivot = [
+    {file = "django-pivot-1.9.0.tar.gz", hash = "sha256:5e985d32d9ff2a6b89419dd0292c0fa2822d494ee479b5fd16cdb542abf66a88"},
+    {file = "django_pivot-1.9.0-py3-none-any.whl", hash = "sha256:1c60e18e7d5f7e42856faee0961748082ddd05b01ae7c8a4baed64d2bbacd051"},
 ]
 djangorestframework = [
     {file = "djangorestframework-3.13.1-py3-none-any.whl", hash = "sha256:24c4bf58ed7e85d1fe4ba250ab2da926d263cd57d64b03e8dcef0ac683f8b1aa"},

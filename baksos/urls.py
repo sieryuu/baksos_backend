@@ -18,7 +18,7 @@ from django.urls import include, path
 from rest_framework import routers
 from common.views import UserViewSet
 
-from pasien.views import (DetailPasienViewSet, PasienViewSet,
+from pasien.views import (DetailPasienViewSet, PasienViewSet, ReportViewSet,
                           ScreeningPasienViewSet)
 from referensi.views import PenyakitViewSet, PuskesmasViewSet
 from rest_framework.authtoken.views import obtain_auth_token 
@@ -31,11 +31,13 @@ router.register(r'puskesmas', PuskesmasViewSet)
 router.register(r'penyakit', PenyakitViewSet)
 
 router.register(r'user', UserViewSet)
+router.register(r'laporan', ReportViewSet, basename='laporan')
+
 
 
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('', include(router.urls)), 
     path('admin/', admin.site.urls),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'), 
 ]

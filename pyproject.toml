@@ -15,6 +15,7 @@ django-cors-headers = "^3.13.0"
 isort = "^5.10.1"
 openpyxl = "^3.0.10"
 django-filter = "^22.1"
+django-pivot = "^1.9.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.8.0"

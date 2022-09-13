@@ -25,6 +25,9 @@ from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import permission_classes
+from django_pivot.pivot import pivot
+
+from django.db.models import Count
 
 # Create your views here.
 class PasienViewSet(viewsets.ModelViewSet):
@@ -57,9 +60,9 @@ class PasienViewSet(viewsets.ModelViewSet):
             )
             return response
         except ValidationError as ex:
-            raise ex
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=True, methods=["post"])
@@ -108,6 +111,25 @@ class PasienViewSet(viewsets.ModelViewSet):
             raise ex
         except Exception as ex:
             return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
+    def pending_tensi(self, request, pk=None):
+        try:
+            pasien = self.get_object()
+
+            PasienService.pending_tensi(
+                pasien=pasien
+            )
+
+            return Response(
+                f"Pasien {pasien.nama} telah pending tensi!"
+            )
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 class DetailPasienViewSet(viewsets.ModelViewSet):
@@ -351,3 +373,12 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
             raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
             raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ReportViewSet(viewsets.ViewSet):
+
+    @action(detail=False, methods=["get"])
+    def laporan_pendaftaran(self, request, pk=None):
+        res = pivot(Pasien, 'penyakit_id', 'puskesmas__pulau', 'id', aggregation=Count)
+
+        return Response(res)

@@ -133,3 +133,7 @@ def update_penyakit(pasien: Pasien, penyakit: str):
 def update_diagnosa(pasien: Pasien, diagnosa: str):
     pasien.diagnosa = diagnosa
     pasien.save()
+
+def pending_tensi(pasien: Pasien):
+    pasien.perlu_rescreen = True
+    pasien.save()
