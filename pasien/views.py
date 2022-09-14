@@ -8,7 +8,7 @@ from pasien.filters import PasienFilterset
 
 from pasien.models import DetailPasien, Pasien, ScreeningPasien
 from pasien.serializer import (
-    CapKehadiranKartuKuningSerializer,
+    SerahKartuKuningSerializer,
     CapKehadiranLabSerializer,
     CapKehadiranSerializer,
     DetailPasienSerializer,
@@ -106,6 +106,32 @@ class PasienViewSet(viewsets.ModelViewSet):
 
             return Response(
                 f"Pasien {pasien.nama} sudah diserahkan nomor antrian {nomor_antrian}!"
+            )
+        except ValidationError as ex:
+            raise ex
+        except Exception as ex:
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
+    def serah_kartu_kuning(self, request, pk=None):
+        try:
+            serializer = SerahKartuKuningSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+            pasien = self.get_object()
+
+            status = serializer.validated_data["status"]
+            tanggal = serializer.validated_data.get("tanggal")
+            jam = serializer.validated_data.get("jam")
+            perhatian = serializer.validated_data.get("perhatian")
+
+            PasienService.serah_kartu_kuning(
+                status=status, tanggal=tanggal, jam=jam, perhatian=perhatian
+            )
+
+            return Response(
+                f"Pasien {pasien.nama} sudah diserahkan kartu kuning!"
             )
         except ValidationError as ex:
             raise ex
@@ -272,28 +298,49 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["post"])
     def hadir_kartu_kuning(self, request, pk=None):
         try:
-            serializer = CapKehadiranKartuKuningSerializer(data=request.data)
+            serializer = CapKehadiranSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             kehadiran = serializer.validated_data["hadir"]
             pasien_id = serializer.validated_data["pasien_id"]
-            status = serializer.validated_data["status"]
-
-            tanggal = serializer.validated_data.get("tanggal")
-            jam = serializer.validated_data.get("jam")
-            perhatian = serializer.validated_data.get("perhatian")
 
             kartu_kuning = ScreeningPasienService.hadir_kartu_kuning(
                 kehadiran=kehadiran,
-                pasien_id=pasien_id,
-                status=status,
-                tanggal=tanggal,
-                jam=jam,
-                perhatian=perhatian,
+                pasien_id=pasien_id
             )
 
             serializer = KartuKuningSerializer(kartu_kuning)
 
             return Response(serializer.data)
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @permission_classes((IsAdminUser,))
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
+    def batal_tensi(self, request, pk=None):
+        try:
+            screening = self.get_object()
+
+            ScreeningPasienService.batal_pemeriksaan(screening)
+
+            return Response("Tensi berhasil dibatalkan!")
+        except ValidationError as ex:
+            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @permission_classes((IsAdminUser,))
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
+    def batal_tensi(self, request, pk=None):
+        try:
+            screening = self.get_object()
+
+            ScreeningPasienService.batal_tensi(screening)
+
+            return Response("Tensi berhasil dibatalkan!")
         except ValidationError as ex:
             raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:

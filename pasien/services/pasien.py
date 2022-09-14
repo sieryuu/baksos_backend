@@ -1,4 +1,4 @@
-from datetime import datetime, tzinfo
+from datetime import date, datetime, time, tzinfo
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
@@ -6,7 +6,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
-from pasien.models import Pasien
+from pasien.models import KartuKuning, Pasien
 from referensi.models import Penyakit, Puskesmas
 
 from django.core.exceptions import ValidationError
@@ -118,6 +118,9 @@ def import_pasien(file):
 
 
 def serah_nomor_antrian(pasien: Pasien, nomor_antrian: str):
+    if pasien.perlu_rescreen:
+        pasien.nomor_antrian_pertama = pasien.nomor_antrian
+        pasien.tanggal_nomor_antrian_pertama = pasien.tanggal_nomor_antrian
     pasien.nomor_antrian = nomor_antrian
     pasien.tanggal_nomor_antrian = timezone.now()
     pasien.last_status = "DAFTAR"
@@ -137,3 +140,28 @@ def update_diagnosa(pasien: Pasien, diagnosa: str):
 def pending_tensi(pasien: Pasien):
     pasien.perlu_rescreen = True
     pasien.save()
+
+def serah_kartu_kuning(pasien: Pasien, 
+    status: str,
+    tanggal: date,
+    jam: time,
+    perhatian: list):
+    kartu_kuning: KartuKuning = KartuKuning()
+    kartu_kuning.nomor = __generate_nomor_kartu_kuning()
+    kartu_kuning.pasien = pasien
+    kartu_kuning.jam_operasi = jam
+    kartu_kuning.tanggal_operasi = tanggal
+    kartu_kuning.perhatian = perhatian
+    kartu_kuning.status = status
+    kartu_kuning.save()
+
+def __generate_nomor_kartu_kuning():
+    prefix = "KK"
+    running_no = 1
+    last_record = KartuKuning.objects.all().order_by("-nomor").first()
+
+    if last_record:
+        last_running_no = int(last_record.nomor[-4:])
+        running_no = running_no + last_running_no
+
+    return prefix + str(running_no).zfill(4)

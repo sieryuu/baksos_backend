@@ -55,7 +55,7 @@ class HasilRadiologiSerializer(CapKehadiranSerializer):
     nomor_kertas_penyerahan = serializers.CharField(required=False)
 
 
-class CapKehadiranKartuKuningSerializer(CapKehadiranSerializer):
+class SerahKartuKuningSerializer(serializers.Serializer):
     status = serializers.CharField()
     tanggal = serializers.DateField(required=False)
     jam = serializers.TimeField(required=False)
