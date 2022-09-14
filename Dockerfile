@@ -44,10 +44,12 @@ FROM python-base as production
 
 COPY --from=builder-base $VENV_PATH $VENV_PATH
 
+# This is a special case. We need to run this script as an entry point:
+COPY ./gunicorn.sh ./gunicorn_config.py ./
+RUN chmod +x '/gunicorn.sh'
+
 COPY . /app
 WORKDIR /app
 
 EXPOSE 3001
-
-# default --graceful-timeout is 30
-CMD ["gunicorn", "--bind", ":3001", "--workers", "3", "--worker-class", "gevent", "--worker-connections", "1000", "--graceful-timeout", "60", "baksos.wsgi"]
+ENTRYPOINT ["/gunicorn.sh"]

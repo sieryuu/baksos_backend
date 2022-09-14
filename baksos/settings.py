@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +27,7 @@ SECRET_KEY = "django-insecure-jxzk7n2zgmld3i#d5qzp6qoi+&hu-4v=itel-w*ofp=m9n%-9u
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CORS_ALLOWED_ORIGINS = ["http://localhost:8001"]
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_EXPOSE_HEADERS = ["content-disposition"]
 
 # Application definition
@@ -37,7 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",
+    # "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
@@ -98,10 +99,10 @@ REST_FRAMEWORK = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "baksos",
-        "USER": "postgres",
-        "PASSWORD": "dev",
-        "HOST": "localhost",
+        "NAME": os.environ.get("DATABASE_NAME", "baksos"),
+        "USER": os.environ.get("DATABASE_USER", "postgres"),
+        "PASSWORD": os.environ.get("DATABASE_PASS", "dev"),
+        "HOST": os.environ.get("DATABASE_HOST", "localhost"),
         "PORT": "5432",
     }
 }
