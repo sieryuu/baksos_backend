@@ -56,10 +56,7 @@ def hadir_lab(kehadiran: bool, pasien_id: int, perlu_ekg: bool, perlu_radiologi:
     pasien.save()
 
 
-def hadir_radiologi(
-    kehadiran: bool,
-    pasien_id: int
-):
+def hadir_radiologi(kehadiran: bool, pasien_id: int):
     pasien: Pasien = Pasien.objects.get(id=pasien_id)
 
     screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
@@ -69,6 +66,7 @@ def hadir_radiologi(
 
     pasien.last_status = "RADIOLOGI"
     pasien.save()
+
 
 def hasil_radiologi(
     screening: ScreeningPasien,
@@ -82,7 +80,6 @@ def hasil_radiologi(
     screening.nomor_kertas_penyerahan = nomor_kertas_penyerahan
     screening.petugas_cek_radiologi = get_current_user().username
     screening.save()
-
 
 
 def hadir_ekg(kehadiran: bool, pasien_id: int):
@@ -99,11 +96,7 @@ def hadir_ekg(kehadiran: bool, pasien_id: int):
 
 def hadir_kartu_kuning(
     kehadiran: bool,
-    pasien_id: int,
-    status: str,
-    tanggal: date,
-    jam: time,
-    perhatian: list,
+    pasien_id: int
 ):
     pasien: Pasien = Pasien.objects.get(id=pasien_id)
     screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
@@ -115,22 +108,23 @@ def hadir_kartu_kuning(
     pasien.last_status = "KARTU KUNING"
     pasien.save()
 
-    kartu_kuning: KartuKuning = KartuKuning()
-    kartu_kuning.nomor = __generate_nomor_kartu_kuning()
-    kartu_kuning.pasien = pasien
-    kartu_kuning.jam_operasi = jam
-    kartu_kuning.tanggal_operasi = tanggal
-    kartu_kuning.perhatian = perhatian
-    kartu_kuning.status = status
-    kartu_kuning.save()
 
-    return kartu_kuning
+def batal_tensi(screening: ScreeningPasien):
+    screening.telah_lewat_cek_tensi = None
+    screening.jam_cek_tensi = None
+    screening.petugas_cek_tensi = None
+    screening.save()
 
 
 def batal_pemeriksaan(screening: ScreeningPasien):
     screening.telah_lewat_pemeriksaan = None
     screening.jam_pemeriksaan = None
     screening.petugas_pemeriksaaan = None
+
+    # batalin tensi jg
+    screening.telah_lewat_cek_tensi = None
+    screening.jam_cek_tensi = None
+    screening.petugas_cek_tensi = None
     screening.save()
 
 
@@ -167,19 +161,3 @@ def batal_kartu_kuning(screening: ScreeningPasien):
     screening.jam_cek_kartu_kuning = None
     screening.petugas_cek_kartu_kuning = None
     screening.save()
-
-    kartu_kuning: KartuKuning = KartuKuning.objects.get(pasien=screening.pasien)
-    kartu_kuning.status = "BATAL"
-    kartu_kuning.save()
-
-
-def __generate_nomor_kartu_kuning():
-    prefix = "KK"
-    running_no = 1
-    last_record = KartuKuning.objects.all().order_by("-nomor").first()
-
-    if last_record:
-        last_running_no = int(last_record.nomor[-4:])
-        running_no = running_no + last_running_no
-
-    return prefix + str(running_no).zfill(4)

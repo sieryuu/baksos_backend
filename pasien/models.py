@@ -36,6 +36,8 @@ class Pasien(CrudModel):
     tanggal_nomor_antrian = models.DateTimeField(null=True)
     last_status = models.CharField(max_length=30, null=True)
     komentar = models.CharField(max_length=255, null=True)
+    nomor_antrian_pertama = models.CharField(max_length=10, null=True)
+    tanggal_nomor_antrian_pertama = models.DateTimeField(null=True)
 
     objects = PasienManager() 
 
