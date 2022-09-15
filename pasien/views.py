@@ -296,13 +296,11 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
             kehadiran = serializer.validated_data["hadir"]
             pasien_id = serializer.validated_data["pasien_id"]
 
-            kartu_kuning = ScreeningPasienService.hadir_kartu_kuning(
+            ScreeningPasienService.hadir_kartu_kuning(
                 kehadiran=kehadiran, pasien_id=pasien_id
             )
 
-            serializer = KartuKuningSerializer(kartu_kuning)
-
-            return Response(serializer.data)
+            return Response("Berhasil mencatat kehadiran KartU Kuning!")
         except ValidationError as ex:
            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
@@ -427,7 +425,7 @@ class ReportViewSet(viewsets.ViewSet):
         screenings = ScreeningPasien.objects.all()
         penyakits = pasien.values_list('diagnosa', flat=True)
 
-        full_report = defaultdict(lambda: defaultdict(None))
+        full_report = defaultdict(lambda: defaultdict(dict))
         for penyakit in penyakits:
             rep =  full_report[penyakit]
             rep['total_daftar'] = pasien.filter(diagnosa=penyakit).count()
