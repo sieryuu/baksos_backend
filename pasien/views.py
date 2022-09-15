@@ -62,9 +62,9 @@ class PasienViewSet(viewsets.ModelViewSet):
             )
             return response
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=True, methods=["post"])
@@ -148,9 +148,9 @@ class PasienViewSet(viewsets.ModelViewSet):
 
             return Response(f"Pasien {pasien.nama} telah pending tensi!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class DetailPasienViewSet(viewsets.ModelViewSet):
@@ -179,9 +179,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat kehadiran Tensi!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
@@ -198,9 +198,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat kehadiran Pemeriksaan!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
@@ -222,9 +222,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat kehadiran Lab!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
@@ -241,9 +241,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat kehadiran Radiologi!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=True, methods=["post"])
@@ -266,9 +266,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat hasil Radiologi!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
@@ -283,9 +283,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat kehadiran EKG!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
@@ -304,9 +304,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response(serializer.data)
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -319,9 +319,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Tensi berhasil dibatalkan!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -334,9 +334,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Tensi berhasil dibatalkan!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -349,9 +349,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Pemeriksaan berhasil dibatalkan!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -364,9 +364,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Lab berhasil dibatalkan!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -379,9 +379,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Radiologi berhasil dibatalkan!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -394,9 +394,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("EKG berhasil dibatalkan!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -409,9 +409,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Kartu Kuning berhasil dibatalkan!")
         except ValidationError as ex:
-            raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+           return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ReportViewSet(viewsets.ViewSet):
@@ -427,19 +427,19 @@ class ReportViewSet(viewsets.ViewSet):
         screenings = ScreeningPasien.objects.all()
         penyakits = pasien.values_list('diagnosa', flat=True)
 
-        full_report = defaultdict({})
+        full_report = defaultdict(lambda: defaultdict(None))
         for penyakit in penyakits:
             rep =  full_report[penyakit]
             rep['total_daftar'] = pasien.filter(diagnosa=penyakit).count()
             rep['total_hadir'] = pasien.filter(diagnosa=penyakit, nomor_antrian__isnull=False).count()
             rep['total_pasien_hadir'] = '0'
-            rep['total_kehadiran_24'] = pasien.filter(diagnosa=penyakit, tanggal_nomor_antrian__date='24-09-2022').count()
-            rep['total_kehadiran_pendaftaran'] = pasien.filter(diagnosa=penyakit, tanggal_nomor_antrian__date='24-09-2022').count()
+            rep['total_kehadiran_24'] = pasien.filter(diagnosa=penyakit, tanggal_nomor_antrian__date='2022-09-24').count()
+            rep['total_kehadiran_pendaftaran'] = pasien.filter(diagnosa=penyakit, tanggal_nomor_antrian__date='2022-09-24').count()
             rep['total_kehadiran_fisik'] = screenings.filter(telah_lewat_pemeriksaan=True).exclude(pasien__penyakit__grup='MATA').count()
             rep['total_kehadiran_mata'] = screenings.filter(telah_lewat_pemeriksaan=True, pasien__penyakit__grup='MATA').count()
-            rep['total_kehadiran_lab'] = screenings.filter(telah_lewat_lab=True).count()
-            rep['total_kehadiran_radiologi'] = screenings.filter(telah_lewat_radiologi=True).count()
-            rep['total_kehadiran_ekg'] = screenings.filter(telah_lewat_ekg=True).count()
-            full_report.append(rep)
+            rep['total_kehadiran_lab'] = screenings.filter(telah_lewat_cek_lab=True).count()
+            rep['total_kehadiran_radiologi'] = screenings.filter(telah_lewat_cek_radiologi=True).count()
+            rep['total_kehadiran_ekg'] = screenings.filter(telah_lewat_cek_ekg=True).count()
+            full_report[rep]
 
         return Response(full_report)
