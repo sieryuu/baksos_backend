@@ -130,9 +130,7 @@ class PasienViewSet(viewsets.ModelViewSet):
                 status=status, tanggal=tanggal, jam=jam, perhatian=perhatian
             )
 
-            return Response(
-                f"Pasien {pasien.nama} sudah diserahkan kartu kuning!"
-            )
+            return Response(f"Pasien {pasien.nama} sudah diserahkan kartu kuning!")
         except ValidationError as ex:
             raise ex
         except Exception as ex:
@@ -144,18 +142,13 @@ class PasienViewSet(viewsets.ModelViewSet):
         try:
             pasien = self.get_object()
 
-            PasienService.pending_tensi(
-                pasien=pasien
-            )
+            PasienService.pending_tensi(pasien=pasien)
 
-            return Response(
-                f"Pasien {pasien.nama} telah pending tensi!"
-            )
+            return Response(f"Pasien {pasien.nama} telah pending tensi!")
         except ValidationError as ex:
             raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
             raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 
 class DetailPasienViewSet(viewsets.ModelViewSet):
@@ -241,8 +234,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
             pasien_id = serializer.validated_data["pasien_id"]
 
             ScreeningPasienService.hadir_radiologi(
-                kehadiran=kehadiran,
-                pasien_id=pasien_id
+                kehadiran=kehadiran, pasien_id=pasien_id
             )
 
             return Response("Berhasil mencatat kehadiran Radiologi!")
@@ -265,7 +257,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
             )
 
             ScreeningPasienService.hasil_radiologi(
-                screening==screening,
+                screening=screening,
                 tipe_hasil_rontgen=tipe_hasil_rontgen,
                 nomor_kertas_penyerahan=nomor_kertas_penyerahan,
             )
@@ -275,7 +267,6 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
             raise Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
             raise Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
@@ -304,8 +295,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
             pasien_id = serializer.validated_data["pasien_id"]
 
             kartu_kuning = ScreeningPasienService.hadir_kartu_kuning(
-                kehadiran=kehadiran,
-                pasien_id=pasien_id
+                kehadiran=kehadiran, pasien_id=pasien_id
             )
 
             serializer = KartuKuningSerializer(kartu_kuning)
@@ -423,9 +413,8 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
 
 class ReportViewSet(viewsets.ViewSet):
-
     @action(detail=False, methods=["get"])
     def laporan_pendaftaran(self, request, pk=None):
-        res = pivot(Pasien, 'penyakit_id', 'puskesmas__pulau', 'id', aggregation=Count)
+        res = pivot(Pasien, "penyakit_id", "puskesmas__pulau", "id", aggregation=Count)
 
         return Response(res)

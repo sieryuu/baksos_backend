@@ -73,7 +73,7 @@ def hasil_radiologi(
     tipe_hasil_rontgen: str,
     nomor_kertas_penyerahan: str,
 ):
-    if tipe_hasil_rontgen == "USB" and nomor_kertas_penyerahan is None:
+    if tipe_hasil_rontgen == "USB" and not nomor_kertas_penyerahan:
         raise ValidationError("Nomor kertas penyerahan kosong!")
 
     screening.tipe_hasil_rontgen = tipe_hasil_rontgen
@@ -94,10 +94,7 @@ def hadir_ekg(kehadiran: bool, pasien_id: int):
     pasien.save()
 
 
-def hadir_kartu_kuning(
-    kehadiran: bool,
-    pasien_id: int
-):
+def hadir_kartu_kuning(kehadiran: bool, pasien_id: int):
     pasien: Pasien = Pasien.objects.get(id=pasien_id)
     screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
     screening_pasien.telah_lewat_cek_kartu_kuning = kehadiran
