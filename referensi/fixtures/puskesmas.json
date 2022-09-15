@@ -370,5 +370,17 @@
       "diperbaharui_oleh": "System",
       "waktu_diperbaharui": "2022-09-11 00:00:00"
     }
+  },
+  {
+    "model": "referensi.puskesmas",
+    "pk": "JING SI TANG",
+    "fields": {
+      "puskesmas": "JING SI TANG",
+      "pulau": "BATAM",
+      "dibuat_oleh": "System",
+      "waktu_dibuat": "2022-09-11 00:00:00",
+      "diperbaharui_oleh": "System",
+      "waktu_diperbaharui": "2022-09-11 00:00:00"
+    }
   }
 ]
