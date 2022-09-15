@@ -12,7 +12,7 @@ set -o pipefail
 # docs/pages/template/production-checklist.rst
 python /app/manage.py migrate
 python /app/manage.py loaddata penyakit puskesmas
-# python /app/manage.py collectstatic --noinput --clear
+python /app/manage.py collectstatic --noinput --clear
 echo "from django.contrib.auth.models import User; User.objects.filter(username='admin').exists() == False and User.objects.create_superuser('admin', 'admin@example.com', 'admin')" | python manage.py shell
 
 # Start gunicorn:
