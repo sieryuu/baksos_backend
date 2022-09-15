@@ -52,7 +52,7 @@ class CapKehadiranLabSerializer(CapKehadiranSerializer):
 
 class HasilRadiologiSerializer(serializers.Serializer):
     tipe_hasil_rontgen = serializers.CharField()
-    nomor_kertas_penyerahan = serializers.CharField(required=False)
+    nomor_kertas_penyerahan = serializers.CharField(required=False, allow_blank=True)
 
 
 class SerahKartuKuningSerializer(serializers.Serializer):
