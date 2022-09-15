@@ -1,3 +1,5 @@
+from collections import defaultdict
+from turtle import pen
 from django.db import transaction
 from django.http import HttpResponse
 from openpyxl.writer.excel import save_virtual_workbook
@@ -265,7 +267,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
             )
 
             ScreeningPasienService.hasil_radiologi(
-                screening==screening,
+                screening=screening,
                 tipe_hasil_rontgen=tipe_hasil_rontgen,
                 nomor_kertas_penyerahan=nomor_kertas_penyerahan,
             )
@@ -429,3 +431,26 @@ class ReportViewSet(viewsets.ViewSet):
         res = pivot(Pasien, 'penyakit_id', 'puskesmas__pulau', 'id', aggregation=Count)
 
         return Response(res)
+    
+    @action(detail=False, methods=["get"])
+    def laporan_screening(self, request, pk=None):
+        pasien = Pasien.objects.all()
+        screenings = ScreeningPasien.objects.all()
+        penyakits = pasien.values_list('diagnosa', flat=True)
+
+        full_report = defaultdict({})
+        for penyakit in penyakits:
+            rep =  full_report[penyakit]
+            rep['total_daftar'] = pasien.filter(diagnosa=penyakit).count()
+            rep['total_hadir'] = pasien.filter(diagnosa=penyakit, nomor_antrian__isnull=False).count()
+            rep['total_pasien_hadir'] = '0'
+            rep['total_kehadiran_24'] = pasien.filter(diagnosa=penyakit, tanggal_nomor_antrian__date='24-09-2022').count()
+            rep['total_kehadiran_pendaftaran'] = pasien.filter(diagnosa=penyakit, tanggal_nomor_antrian__date='24-09-2022').count()
+            rep['total_kehadiran_fisik'] = screenings.filter(telah_lewat_pemeriksaan=True).exclude(pasien__penyakit__grup='MATA').count()
+            rep['total_kehadiran_mata'] = screenings.filter(telah_lewat_pemeriksaan=True, pasien__penyakit__grup='MATA').count()
+            rep['total_kehadiran_lab'] = screenings.filter(telah_lewat_lab=True).count()
+            rep['total_kehadiran_radiologi'] = screenings.filter(telah_lewat_radiologi=True).count()
+            rep['total_kehadiran_ekg'] = screenings.filter(telah_lewat_ekg=True).count()
+            full_report.append(rep)
+
+        return Response(full_report)
