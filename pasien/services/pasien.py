@@ -28,10 +28,10 @@ def generate_import_template():
         "Nomor Identitas",
         "Tipe Identitas",
         "Tempat Lahir",
-        "Tanggal Lahir",
-        "Jenis Kelamin",
+        "Tanggal Lahir (DD-MM-YYYY)",
+        "Jenis Kelamin (L/P)",
         "Alamat",
-        "Daerah",
+        "Kabupaten/Kota",
         "Nomor Telepon",
         "Nama Keluarga",
         "Nomor Telepon Keluarga",
@@ -111,6 +111,8 @@ def import_pasien(file):
                 nama_keluarga=row[12].value,
                 nomor_telepon_keluarga=row[13].value,
                 diagnosa=penyakit.pk,
+                nama_pendamping=row[12].value,
+                nomor_telepon_pendamping=row[13].value
             )
         )
 

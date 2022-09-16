@@ -48,6 +48,7 @@ class CapKehadiranSerializer(serializers.Serializer):
 class CapKehadiranLabSerializer(CapKehadiranSerializer):
     perlu_radiologi = serializers.BooleanField()
     perlu_ekg = serializers.BooleanField()
+    diagnosa = serializers.CharField()
 
 
 class HasilRadiologiSerializer(serializers.Serializer):

@@ -41,7 +41,7 @@ def hadir_pemeriksaan(kehadiran: bool, pasien_id: int):
     pasien.save()
 
 
-def hadir_lab(kehadiran: bool, pasien_id: int, perlu_ekg: bool, perlu_radiologi: bool):
+def hadir_lab(kehadiran: bool, pasien_id: int, perlu_ekg: bool, perlu_radiologi: bool, diagnosa: str):
     pasien: Pasien = Pasien.objects.get(id=pasien_id)
 
     screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
@@ -53,6 +53,7 @@ def hadir_lab(kehadiran: bool, pasien_id: int, perlu_ekg: bool, perlu_radiologi:
     pasien.last_status = "LAB"
     pasien.perlu_ekg = perlu_ekg
     pasien.perlu_radiologi = perlu_radiologi
+    pasien.diagnosa = diagnosa
     pasien.save()
 
 
@@ -73,9 +74,6 @@ def hasil_radiologi(
     tipe_hasil_rontgen: str,
     nomor_kertas_penyerahan: str,
 ):
-    if tipe_hasil_rontgen == "USB" and not nomor_kertas_penyerahan:
-        raise ValidationError("Nomor kertas penyerahan kosong!")
-
     screening.tipe_hasil_rontgen = tipe_hasil_rontgen
     screening.nomor_kertas_penyerahan = nomor_kertas_penyerahan
     screening.petugas_cek_radiologi = get_current_user().username

@@ -7,8 +7,12 @@ from common.models import CrudModel, CrudModelManager
 
 from referensi.models import Penyakit, Puskesmas
 
+from django.core.exceptions import ValidationError
+
+
 class PasienManager(CrudModelManager):
     pass
+
 
 # Create your models here.
 class Pasien(CrudModel):
@@ -28,6 +32,8 @@ class Pasien(CrudModel):
     nomor_telepon = models.CharField(max_length=15)
     nama_keluarga = models.CharField(max_length=50)
     nomor_telepon_keluarga = models.CharField(max_length=15)
+    nama_pendamping = models.CharField(max_length=50)
+    nomor_telepon_pendamping = models.CharField(max_length=15)
     perlu_rescreen = models.BooleanField(default=False)
     perlu_radiologi = models.BooleanField(default=False)
     perlu_ekg = models.BooleanField(default=False)
@@ -39,7 +45,7 @@ class Pasien(CrudModel):
     nomor_antrian_pertama = models.CharField(max_length=10, null=True)
     tanggal_nomor_antrian_pertama = models.DateTimeField(null=True)
 
-    objects = PasienManager() 
+    objects = PasienManager()
 
     class Meta:
         constraints = [
@@ -55,16 +61,27 @@ class Pasien(CrudModel):
         using: Optional[str] = "default",
         update_fields: Optional[Iterable[str]] = None,
     ) -> None:
+        pulau = Puskesmas.objects.values_list("pulau", flat=True)
+
         if self.nomor_antrian and self.tanggal_nomor_antrian:
-            if Pasien.objects.filter(
-                nomor_antrian=self.nomor_antrian,
-                penyakit__grup=self.penyakit.grup,
-                tanggal_nomor_antrian__date=self.tanggal_nomor_antrian.date(),
-            ).exclude(pk=self.pk).exists():
-                raise Exception(f"Nomor antrian {self.penyakit.nama}/{self.nomor_antrian} duplikat!")
+            if (
+                Pasien.objects.filter(
+                    nomor_antrian=self.nomor_antrian,
+                    penyakit__grup=self.penyakit.grup,
+                    tanggal_nomor_antrian__date=self.tanggal_nomor_antrian.date(),
+                )
+                .exclude(pk=self.pk)
+                .exists()
+            ):
+                raise ValidationError(
+                    f"Nomor antrian {self.penyakit.nama}/{self.nomor_antrian} duplikat!"
+                )
 
         if self.pk is None:
             self.diagnosa = self.penyakit.pk
+
+        if self.daerah not in pulau:
+            raise ValidationError(f"{self.daerah} tidak ada di daftar pulau!")
 
         return super().save(force_insert, force_update, using, update_fields)
 
