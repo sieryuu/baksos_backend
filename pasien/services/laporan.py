@@ -9,7 +9,7 @@ from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
 from openpyxl.worksheet.table import Table, TableStyleInfo
 
 
-def laporan_screening():
+def laporan_kehadiran():
     pasien = Pasien.objects.all()
     screenings = ScreeningPasien.objects.all()
     penyakits = pasien.values_list("diagnosa", flat=True)
@@ -29,8 +29,8 @@ def laporan_screening():
         total_rescreen = pasien.filter(perlu_rescreen=True).count()
 
         rep["total_daftar"] = pasien.filter(diagnosa=penyakit).count()
-        rep["total_hadir"] = pasien.filter(
-            diagnosa=penyakit, nomor_antrian__isnull=False
+        rep["total_tidak_hadir"] = pasien.filter(
+            diagnosa=penyakit, nomor_antrian__isnull=True
         ).count()
         rep["total_pasien_hadir"] = (
             total_hari_pertama + total_hari_kedua - total_rescreen
@@ -62,8 +62,8 @@ def laporan_screening():
     return full_report
 
 #yes this is horseshit but im going insane
-def laporan_screening_excel():
-    full_report = laporan_screening()
+def laporan_kehadiran_excel():
+    full_report = laporan_kehadiran()
 
     workbook = Workbook()
     worksheet = workbook.active

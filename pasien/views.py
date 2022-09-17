@@ -438,13 +438,13 @@ class ReportViewSet(viewsets.ViewSet):
         return Response(res)
 
     @action(detail=False, methods=["get"])
-    def laporan_screening(self, request, pk=None):
+    def laporan_kehadiran(self, request, pk=None):
         full_report = LaporanService.laporan_screening()
 
         return Response(full_report)
 
     @action(detail=False, methods=["get"])
-    def download_laporan_screening(self, request, pk=None):
+    def download_laporan_kehadiran(self, request, pk=None):
 
         workbook = LaporanService.laporan_screening_excel()
 
