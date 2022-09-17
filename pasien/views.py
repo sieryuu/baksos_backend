@@ -15,7 +15,7 @@ from pasien.serializer import (
     ImportPasienSerializer,
     PasienSerializer,
     ScreeningPasienSerializer,
-    KartuKuningSerializer
+    KartuKuningSerializer,
 )
 from pasien.services import pasien as PasienService
 from pasien.services import screening_pasien as ScreeningPasienService
@@ -445,7 +445,7 @@ class ReportViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=["get"])
     def download_laporan_screening(self, request, pk=None):
-        
+
         workbook = LaporanService.laporan_screening_excel()
 
         response = HttpResponse(
@@ -455,9 +455,11 @@ class ReportViewSet(viewsets.ViewSet):
         response["Content-Disposition"] = "attachment; filename=LaporanScreening.xlsx"
         return response
 
-    
+
 class KartuKuningViewSet(viewsets.ModelViewSet):
     queryset = KartuKuning.objects.all()
     serializer_class = KartuKuningSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = "__all__"
+    filterset_fields = [
+        "pasien"
+    ]  # kasih all ada error karena kolom perhatian itu array
