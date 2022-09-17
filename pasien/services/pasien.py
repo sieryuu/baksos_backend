@@ -1,4 +1,4 @@
-from datetime import date, datetime, time
+from datetime import date, datetime, time, tzinfo
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
