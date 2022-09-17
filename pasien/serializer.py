@@ -58,6 +58,6 @@ class HasilRadiologiSerializer(serializers.Serializer):
 
 class SerahKartuKuningSerializer(serializers.Serializer):
     status = serializers.CharField()
-    tanggal = serializers.DateField(required=False)
-    jam = serializers.TimeField(required=False)
+    tanggal = serializers.DateField(required=False, allow_null=True)
+    jam = serializers.TimeField(required=False, allow_null=True)
     perhatian = serializers.ListField(required=False)
