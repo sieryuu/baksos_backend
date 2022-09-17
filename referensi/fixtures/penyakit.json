@@ -4,19 +4,7 @@
       "pk": "KATARAK",
       "fields": {
         "nama": "KATARAK",
-        "grup": "MATA",
-        "dibuat_oleh": "System",
-        "waktu_dibuat": "2022-09-11 00:00:00",
-        "diperbaharui_oleh": "System",
-        "waktu_diperbaharui": "2022-09-11 00:00:00"
-      }
-    },
-    {
-      "model": "referensi.penyakit",
-      "pk": "PYTERIGIUM",
-      "fields": {
-        "nama": "PYTERIGIUM",
-        "grup": "MATA",
+        "grup": "KATARAK",
         "dibuat_oleh": "System",
         "waktu_dibuat": "2022-09-11 00:00:00",
         "diperbaharui_oleh": "System",

@@ -14,7 +14,6 @@ from pasien.serializer import (
     DetailPasienSerializer,
     HasilRadiologiSerializer,
     ImportPasienSerializer,
-    KartuKuningSerializer,
     PasienSerializer,
     ScreeningPasienSerializer,
 )
@@ -36,6 +35,7 @@ class PasienViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = "__all__"
     filterset_class = PasienFilterset
+    search_fields = ['nama', 'nomor_identitas', 'nomor_telepon']
 
     @action(detail=False, methods=["get"])
     def template(self, request, pk=None):
@@ -209,6 +209,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
             kehadiran = serializer.validated_data["hadir"]
             perlu_ekg = serializer.validated_data["perlu_ekg"]
             perlu_radiologi = serializer.validated_data["perlu_radiologi"]
+            diagnosa = serializer.validated_data['diagnosa']
             pasien_id = serializer.validated_data["pasien_id"]
 
             ScreeningPasienService.hadir_lab(
@@ -216,6 +217,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
                 pasien_id=pasien_id,
                 perlu_ekg=perlu_ekg,
                 perlu_radiologi=perlu_radiologi,
+                diagnosa=diagnosa
             )
 
             return Response("Berhasil mencatat kehadiran Lab!")
@@ -453,7 +455,7 @@ class ReportViewSet(viewsets.ViewSet):
                 .count()
             )
             rep["total_kehadiran_mata"] = screenings.filter(
-                telah_lewat_pemeriksaan=True, pasien__penyakit__grup="MATA"
+                telah_lewat_pemeriksaan=True, pasien__penyakit__grup="KATARAK"
             ).count()
             rep["total_kehadiran_lab"] = screenings.filter(
                 telah_lewat_cek_lab=True
