@@ -121,14 +121,14 @@ class PasienViewSet(viewsets.ModelViewSet):
 
             pasien = self.get_object()
 
-            status = serializer.validated_data["status"]
+            status_kk = serializer.validated_data["status"]
             tanggal = serializer.validated_data.get("tanggal")
             jam = serializer.validated_data.get("jam")
             perhatian = serializer.validated_data.get("perhatian")
 
             PasienService.serah_kartu_kuning(
                 pasien=pasien,
-                status=status,
+                status=status_kk,
                 tanggal=tanggal,
                 jam=jam,
                 perhatian=perhatian,
