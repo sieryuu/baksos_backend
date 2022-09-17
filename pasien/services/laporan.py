@@ -61,16 +61,50 @@ def laporan_screening():
     
     return full_report
 
+#yes this is horseshit but im going insane
 def laporan_screening_excel():
     full_report = laporan_screening()
 
     workbook = Workbook()
-    ws = workbook.active
+    worksheet = workbook.active
 
-    penyakit_list = full_report.keys()
+    penyakit_list = list(full_report.keys())
 
-    for col in ws.iter_rows(min_row=1, max_col=1):
-        for cell in col:
-            print(cell)
+    worksheet['A1'].value = 'Penyakit'
+    for row, i in enumerate(penyakit_list):
+        column_cell = 'A'
+        worksheet[column_cell+str(row+2)] = str(i)
+
+    header_list = list(full_report[penyakit_list[0]].keys())
+
+    for col, entry in enumerate(header_list):
+        worksheet.cell(row=1, column=col+2, value=entry)
+    
+    row = 2
+    for penyakit in penyakit_list:
+        penyakit_data = list(full_report[penyakit].values())
+        for col, entry in enumerate(penyakit_data):
+            worksheet.cell(row=row, column=col+2, value=entry)
+        row += 1
+    
+    
+    dim_holder = DimensionHolder(worksheet=worksheet)
+    for col in range(worksheet.min_column, worksheet.max_column + 1):
+        dim_holder[get_column_letter(col)] = ColumnDimension(
+            worksheet, min=col, max=col, width=20
+        )
+
+    worksheet.column_dimensions = dim_holder
+
+    tab = Table(displayName="Table1", ref=f"A1:M{worksheet.max_row}")
+    style = TableStyleInfo(
+        name="TableStyleLight8",
+        showFirstColumn=False,
+        showLastColumn=False,
+        showRowStripes=True,
+        showColumnStripes=True,
+    )
+    tab.tableStyleInfo = style
+    worksheet.add_table(tab)
         
     return workbook
