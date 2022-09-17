@@ -112,7 +112,7 @@ def import_pasien(file):
                 nomor_telepon_keluarga=row[13].value,
                 diagnosa=penyakit.pk,
                 nama_pendamping=row[12].value,
-                nomor_telepon_pendamping=row[13].value
+                nomor_telepon_pendamping=row[13].value,
             )
         )
 
@@ -139,15 +139,15 @@ def update_diagnosa(pasien: Pasien, diagnosa: str):
     pasien.diagnosa = diagnosa
     pasien.save()
 
+
 def pending_tensi(pasien: Pasien):
     pasien.perlu_rescreen = True
     pasien.save()
 
-def serah_kartu_kuning(pasien: Pasien, 
-    status: str,
-    tanggal: date,
-    jam: time,
-    perhatian: list):
+
+def serah_kartu_kuning(
+    pasien: Pasien, status: str, tanggal: date, jam: time, perhatian: list
+):
     kartu_kuning: KartuKuning = KartuKuning()
     kartu_kuning.nomor = __generate_nomor_kartu_kuning()
     kartu_kuning.pasien = pasien
@@ -156,6 +156,11 @@ def serah_kartu_kuning(pasien: Pasien,
     kartu_kuning.perhatian = perhatian
     kartu_kuning.status = status
     kartu_kuning.save()
+
+
+def batal_serah_kartu_kuning(pasien: Pasien):
+    KartuKuning.objects.filter(pasien=pasien).delete()
+
 
 def __generate_nomor_kartu_kuning():
     prefix = "KK"

@@ -60,7 +60,7 @@ class PasienViewSet(viewsets.ModelViewSet):
             )
             return response
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -127,10 +127,30 @@ class PasienViewSet(viewsets.ModelViewSet):
             perhatian = serializer.validated_data.get("perhatian")
 
             PasienService.serah_kartu_kuning(
-                status=status, tanggal=tanggal, jam=jam, perhatian=perhatian
+                pasien=pasien,
+                status=status,
+                tanggal=tanggal,
+                jam=jam,
+                perhatian=perhatian,
             )
 
             return Response(f"Pasien {pasien.nama} sudah diserahkan kartu kuning!")
+        except ValidationError as ex:
+            raise ex
+        except Exception as ex:
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
+    def batal_serah_kartu_kuning(self, request, pk=None):
+        try:
+            pasien = self.get_object()
+
+            PasienService.batal_serah_kartu_kuning(
+                pasien=pasien
+            )
+
+            return Response(f"Kartu Kuning pasien {pasien.nama} sudah dibatalkan!")
         except ValidationError as ex:
             raise ex
         except Exception as ex:
@@ -146,7 +166,7 @@ class PasienViewSet(viewsets.ModelViewSet):
 
             return Response(f"Pasien {pasien.nama} telah pending tensi!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -177,7 +197,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat kehadiran Tensi!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -196,7 +216,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat kehadiran Pemeriksaan!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -222,7 +242,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat kehadiran Lab!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -241,7 +261,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat kehadiran Radiologi!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -283,7 +303,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat kehadiran EKG!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -302,7 +322,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat kehadiran KartU Kuning!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -317,7 +337,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Tensi berhasil dibatalkan!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -332,7 +352,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Tensi berhasil dibatalkan!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -347,7 +367,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Pemeriksaan berhasil dibatalkan!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -362,7 +382,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Lab berhasil dibatalkan!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -377,7 +397,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Radiologi berhasil dibatalkan!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -392,7 +412,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("EKG berhasil dibatalkan!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -407,7 +427,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Kartu Kuning berhasil dibatalkan!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
             return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

@@ -1,13 +1,9 @@
-from cmath import tan
-from contextlib import nullcontext
-from datetime import date, datetime
-from time import time
 from django.utils import timezone
 from crum import get_current_user
 
-from pasien.models import KartuKuning, Pasien, ScreeningPasien
+from pasien.models import Pasien, ScreeningPasien
 
-from django.core.exceptions import ValidationError
+from django.db import transaction
 
 
 def hadir_tensi(kehadiran: bool, pasien_id: int):
@@ -41,7 +37,13 @@ def hadir_pemeriksaan(kehadiran: bool, pasien_id: int):
     pasien.save()
 
 
-def hadir_lab(kehadiran: bool, pasien_id: int, perlu_ekg: bool, perlu_radiologi: bool, diagnosa: str):
+def hadir_lab(
+    kehadiran: bool,
+    pasien_id: int,
+    perlu_ekg: bool,
+    perlu_radiologi: bool,
+    diagnosa: str,
+):
     pasien: Pasien = Pasien.objects.get(id=pasien_id)
 
     screening_pasien: ScreeningPasien = ScreeningPasien.objects.get(pasien=pasien)
