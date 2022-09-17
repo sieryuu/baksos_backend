@@ -1,4 +1,3 @@
-from collections import defaultdict
 from django.db import transaction
 from django.http import HttpResponse
 from openpyxl.writer.excel import save_virtual_workbook
@@ -6,7 +5,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from pasien.filters import PasienFilterset
-from pasien.models import DetailPasien, Pasien, ScreeningPasien
+from pasien.models import DetailPasien, Pasien, ScreeningPasien, KartuKuning
 from pasien.serializer import (
     SerahKartuKuningSerializer,
     CapKehadiranLabSerializer,
@@ -16,16 +15,17 @@ from pasien.serializer import (
     ImportPasienSerializer,
     PasienSerializer,
     ScreeningPasienSerializer,
+    KartuKuningSerializer
 )
 from pasien.services import pasien as PasienService
 from pasien.services import screening_pasien as ScreeningPasienService
+from pasien.services import laporan as LaporanService
 from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import permission_classes
 from django_pivot.pivot import pivot
 from rest_framework.exceptions import ValidationError
-
 from django.db.models import Count
 
 # Create your views here.
@@ -439,51 +439,25 @@ class ReportViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=["get"])
     def laporan_screening(self, request, pk=None):
-        pasien = Pasien.objects.all()
-        screenings = ScreeningPasien.objects.all()
-        penyakits = pasien.values_list("diagnosa", flat=True)
-
-        full_report = defaultdict(lambda: defaultdict(dict))
-        for penyakit in penyakits:
-            rep = full_report[penyakit]
-
-            total_hari_pertama = pasien.filter(
-                diagnosa=penyakit, tanggal_nomor_antrian__date="2022-09-24"
-            ).count()
-            total_hari_kedua = pasien.filter(
-                diagnosa=penyakit, tanggal_nomor_antrian__date="2022-09-24"
-            ).count()
-            total_rescreen = pasien.filter(perlu_rescreen=True).count()
-
-            rep["total_daftar"] = pasien.filter(diagnosa=penyakit).count()
-            rep["total_hadir"] = pasien.filter(
-                diagnosa=penyakit, nomor_antrian__isnull=False
-            ).count()
-            rep["total_pasien_hadir"] = (
-                total_hari_pertama + total_hari_kedua - total_rescreen
-            )
-            rep["total_kehadiran_hari_pertama"] = total_hari_pertama
-            rep["total_kehadiran_pendaftaran"] = pasien.filter(
-                diagnosa=penyakit, tanggal_nomor_antrian__date="2022-09-24"
-            ).count()
-            rep["total_kehadiran_fisik"] = (
-                screenings.filter(telah_lewat_pemeriksaan=True)
-                .exclude(pasien__penyakit__grup="MATA")
-                .count()
-            )
-            rep["total_kehadiran_mata"] = screenings.filter(
-                telah_lewat_pemeriksaan=True, pasien__penyakit__grup="KATARAK"
-            ).count()
-            rep["total_kehadiran_lab"] = screenings.filter(
-                telah_lewat_cek_lab=True
-            ).count()
-            rep["total_kehadiran_radiologi"] = screenings.filter(
-                telah_lewat_cek_radiologi=True
-            ).count()
-            rep["total_kehadiran_ekg"] = screenings.filter(
-                telah_lewat_cek_ekg=True
-            ).count()
-            rep["total_kehadiran_hari_kedua"] = total_hari_kedua
-            rep["total_kehadiran_rescreening"] = total_rescreen
+        full_report = LaporanService.laporan_screening()
 
         return Response(full_report)
+
+    @action(detail=False, methods=["get"])
+    def download_laporan_screening(self, request, pk=None):
+        
+        workbook = LaporanService.laporan_screening_excel()
+
+        response = HttpResponse(
+            content=save_virtual_workbook(workbook),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        response["Content-Disposition"] = "attachment; filename=LaporanScreening.xlsx"
+        return response
+
+    
+class KartuKuningViewSet(viewsets.ModelViewSet):
+    queryset = KartuKuning.objects.all()
+    serializer_class = KartuKuningSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_fields = "__all__"

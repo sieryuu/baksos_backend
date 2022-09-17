@@ -134,6 +134,7 @@ def batal_lab(screening: ScreeningPasien):
     pasien: Pasien = screening.pasien
     pasien.perlu_ekg = False
     pasien.perlu_radiologi = False
+    pasien.diagnosa = pasien.penyakit.pk
     pasien.save()
 
 
