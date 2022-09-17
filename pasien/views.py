@@ -62,7 +62,7 @@ class PasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=True, methods=["post"])
@@ -166,7 +166,7 @@ class PasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class DetailPasienViewSet(viewsets.ModelViewSet):
@@ -197,7 +197,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
@@ -216,7 +216,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
@@ -261,7 +261,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=True, methods=["post"])
@@ -303,7 +303,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
@@ -322,7 +322,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -337,7 +337,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -352,7 +352,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -367,7 +367,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -382,7 +382,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -397,7 +397,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -412,7 +412,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @permission_classes((IsAdminUser,))
     @transaction.atomic
@@ -427,7 +427,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ReportViewSet(viewsets.ViewSet):
