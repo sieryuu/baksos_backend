@@ -1,5 +1,4 @@
 from collections import defaultdict
-from turtle import pen
 from django.db import transaction
 from django.http import HttpResponse
 from openpyxl.writer.excel import save_virtual_workbook
@@ -7,7 +6,6 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from pasien.filters import PasienFilterset
-
 from pasien.models import DetailPasien, Pasien, ScreeningPasien
 from pasien.serializer import (
     SerahKartuKuningSerializer,
@@ -23,11 +21,11 @@ from pasien.serializer import (
 from pasien.services import pasien as PasienService
 from pasien.services import screening_pasien as ScreeningPasienService
 from django_filters import rest_framework as filters
-from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import permission_classes
 from django_pivot.pivot import pivot
+from rest_framework.exceptions import ValidationError
 
 from django.db.models import Count
 
@@ -224,7 +222,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except ValidationError as ex:
             return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
@@ -257,6 +255,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
             nomor_kertas_penyerahan = serializer.validated_data.get(
                 "nomor_kertas_penyerahan"
             )
+            a = 1 / 0
 
             ScreeningPasienService.hasil_radiologi(
                 screening=screening,
@@ -266,9 +265,9 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
             return Response("Berhasil mencatat hasil Radiologi!")
         except ValidationError as ex:
-            return Response(ex.message, status=status.HTTP_400_BAD_REQUEST)
+            raise ex
         except Exception as ex:
-            return Response(ex.message, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @transaction.atomic
     @action(detail=False, methods=["post"])
