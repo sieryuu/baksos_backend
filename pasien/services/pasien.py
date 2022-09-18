@@ -1,4 +1,5 @@
 from datetime import date, datetime, time, tzinfo
+from doctest import master
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
@@ -60,6 +61,47 @@ def generate_import_template():
     tab.tableStyleInfo = style
     worksheet.add_table(tab)
 
+    puskesmas_list = Puskesmas.objects.all()
+    penyakit_list = Penyakit.objects.all()
+    tipe_identitas = ['KK', 'KTP', 'PASPOR', 'SIM']
+
+    master_data_worksheet = workbook.create_sheet('Master Data')
+
+    master_data_worksheet["A1"].value = "Puskesmas"
+    master_data_worksheet["A1"].font = Font(bold=True)
+
+    master_data_worksheet["C1"].value = "Penyakit"
+    master_data_worksheet["C1"].font = Font(bold=True)
+
+    master_data_worksheet["E1"].value = "Tipe Identitas"
+    master_data_worksheet["E1"].font = Font(bold=True)
+
+    master_data_worksheet["G1"].value = "Kabupaten/Kota"
+    master_data_worksheet["G1"].font = Font(bold=True)
+
+    for row, i in enumerate(puskesmas_list):
+        column_cell = "A"
+        master_data_worksheet[column_cell + str(row + 2)] = i.puskesmas
+
+    for row, i in enumerate(penyakit_list):
+        column_cell = "C"
+        master_data_worksheet[column_cell + str(row + 2)] = i.nama
+
+    for row, i in enumerate(tipe_identitas):
+        column_cell = "E"
+        master_data_worksheet[column_cell + str(row + 2)] = i
+
+    for row, i in enumerate(puskesmas_list.values_list('pulau', flat=True).distinct()):
+        column_cell = "G"
+        master_data_worksheet[column_cell + str(row + 2)] = i
+    
+    dim_holder = DimensionHolder(worksheet=master_data_worksheet)
+
+    for col in range(master_data_worksheet.min_column, master_data_worksheet.max_column + 1):
+        dim_holder[get_column_letter(col)] = ColumnDimension(
+            master_data_worksheet, min=col, max=col, width=20
+        )
+
     return workbook
 
 
@@ -89,8 +131,17 @@ def import_pasien(file):
 
         umur = f"{tahun} Tahun {bulan} Bulan"
 
-        puskesmas = puskesmas_list.get(puskesmas=row[1].value)
-        penyakit = penyakit_list.get(nama=row[2].value)
+        inputted_puskemas = row[1].value
+        inputted_penyakit = row[2].value
+
+        if not puskesmas_list.filter(puskesmas=inputted_puskemas).exists():
+            raise ValidationError(f"Row: {row[0].row} - Data Puskesmas yang ditaruh tidak valid.")
+
+        if not penyakit_list.filter(nama=inputted_penyakit).exists():
+            raise ValidationError(f"Row: {row[0].row} - Data Penyakit yang ditaruh tidak valid.")
+
+        puskesmas = puskesmas_list.get(puskesmas=inputted_puskemas)
+        penyakit = penyakit_list.get(nama=inputted_penyakit)
 
         new_patients.append(
             Pasien(
