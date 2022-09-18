@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.forms.models import model_to_dict
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 
@@ -12,9 +12,11 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = '__all__'
+    filterset_fields = "__all__"
 
     @action(detail=True, methods=["get"])
     def get_user_permission(self, request, pk=None):
         user: User = self.get_object()
-        return Response(user.get_all_permissions())
+        return Response(
+            {"user": model_to_dict(user), "permissions": user.get_all_permissions()}
+        )
