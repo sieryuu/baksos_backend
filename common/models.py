@@ -2,7 +2,7 @@ from typing import Iterable, Optional
 from django.db import models
 from crum import get_current_user
 from django.utils import timezone
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.http import Http404
 # Create your models here.
 
 
@@ -39,3 +39,16 @@ class CrudModel(models.Model):
         self.dibuat_oleh = current_user
         self.diperbaharui_oleh = current_user
         return super().save(force_insert, force_update, using, update_fields)
+    
+
+
+def check_user_permission(allowed_users):
+    def decorator(function):
+        def wrapper(request, *args, **kwargs):
+            if request.user.username in allowed_users or request.user.is_superuser or request.user.is_admin:
+                return function(request, *args, **kwargs)
+            raise Http404
+
+        return wrapper
+
+    return decorator

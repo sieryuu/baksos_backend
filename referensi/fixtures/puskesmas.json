@@ -109,9 +109,9 @@
   },
   {
     "model": "referensi.puskesmas",
-    "pk": "MENTABAU",
+    "pk": "MENTARAU",
     "fields": {
-      "puskesmas": "MENTABAU",
+      "puskesmas": "MENTARAU",
       "pulau": "BATAM",
       "dibuat_oleh": "System",
       "waktu_dibuat": "2022-09-11 00:00:00",

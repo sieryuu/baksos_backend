@@ -24,9 +24,8 @@ from django_filters import rest_framework as filters
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import permission_classes
-from django_pivot.pivot import pivot
 from rest_framework.exceptions import ValidationError
-from django.db.models import Count
+from common.models import check_user_permission
 
 # Create your views here.
 class PasienViewSet(viewsets.ModelViewSet):
@@ -63,7 +62,8 @@ class PasienViewSet(viewsets.ModelViewSet):
             raise ex
         except Exception as ex:
             return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+    
+    #@check_user_permission(['lab'])
     @transaction.atomic
     @action(detail=True, methods=["post"])
     def update_penyakit(self, request, pk=None):
@@ -106,6 +106,24 @@ class PasienViewSet(viewsets.ModelViewSet):
 
             return Response(
                 f"Pasien {pasien.nama} sudah diserahkan nomor antrian {nomor_antrian}!"
+            )
+        except ValidationError as ex:
+            raise ex
+        except Exception as ex:
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @transaction.atomic
+    @action(detail=True, methods=["post"])
+    def batal_nomor_antrian(self, request, pk=None):
+        try:
+            pasien = self.get_object()
+
+            PasienService.batal_nomor_antrian(
+                pasien=pasien
+            )
+
+            return Response(
+                f"Antrian pasien {pasien.nama} sudah dibatalkan!"
             )
         except ValidationError as ex:
             raise ex
@@ -199,6 +217,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except Exception as ex:
             return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    #@check_user_permission(allowed_users=['pemeriksaan_mata', 'pemeriksaan_fisik'])
     @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_pemeriksaan(self, request, pk=None):
@@ -493,3 +512,4 @@ class KartuKuningViewSet(viewsets.ModelViewSet):
     filterset_fields = [
         "pasien"
     ]  # kasih all ada error karena kolom perhatian itu array
+

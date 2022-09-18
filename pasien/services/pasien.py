@@ -128,6 +128,12 @@ def serah_nomor_antrian(pasien: Pasien, nomor_antrian: str):
     pasien.last_status = "DAFTAR"
     pasien.save()
 
+def batal_nomor_antrian(pasien: Pasien):
+    pasien.nomor_antrian = None
+    pasien.tanggal_nomor_antrian = None
+    pasien.last_status = None
+    pasien.save()
+
 
 def update_penyakit(pasien: Pasien, penyakit: str):
     pasien.penyakit_id = penyakit

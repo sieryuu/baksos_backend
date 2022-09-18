@@ -52,11 +52,21 @@ def laporan_pendaftaran_excel():
 
     row = 2
     for data in full_report:
-        for header in headers:
-            for col, entry in enumerate(data):
-                worksheet.cell(row=row, column=col + 2, value=data[header])
-                col +=1
+        for col, entry in enumerate(data):
+            worksheet.cell(row=row, column=col + 2, value=data[entry])
         row += 1
+    
+    tab = Table(displayName="Table1", ref=f"A1:E{worksheet.max_row}")
+    style = TableStyleInfo(
+        name="TableStyleLight8",
+        showFirstColumn=False,
+        showLastColumn=False,
+        showRowStripes=True,
+        showColumnStripes=True,
+    )
+    tab.tableStyleInfo = style
+    worksheet.add_table(tab)
+
 
     return workbook
 
