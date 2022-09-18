@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from common.serializer import UserSerializer
 from django_filters import rest_framework as filters
+from crum import get_current_user
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -14,9 +15,9 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_fields = "__all__"
 
-    @action(detail=True, methods=["get"])
+    @action(detail=False, methods=["get"])
     def get_user_permission(self, request, pk=None):
-        user: User = self.get_object()
+        user: User = get_current_user()
         return Response(
             {"user": model_to_dict(user), "permissions": user.get_all_permissions()}
         )

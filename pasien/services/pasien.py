@@ -187,8 +187,8 @@ def serah_nomor_antrian(pasien: Pasien, nomor_antrian: str):
 
 
 def batal_nomor_antrian(pasien: Pasien):
-    today = datetime.now()
-    if pasien.tanggal_nomor_antrian__date != today.date:
+    today = timezone.now()
+    if pasien.tanggal_nomor_antrian.date() != today.date():
         raise ValidationError("Pembatalan nomor antrian harus di hari yang sama!")
     pasien.nomor_antrian = None
     pasien.tanggal_nomor_antrian = None
