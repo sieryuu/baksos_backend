@@ -21,7 +21,7 @@ from pasien.services import pasien as PasienService
 from pasien.services import screening_pasien as ScreeningPasienService
 from pasien.services import laporan as LaporanService
 from django_filters import rest_framework as filters
-from rest_framework import status
+from rest_framework import status, filters as rest_filters
 from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import permission_classes
 from rest_framework.exceptions import ValidationError
@@ -31,7 +31,7 @@ from common.models import check_user_permission
 class PasienViewSet(viewsets.ModelViewSet):
     queryset = Pasien.objects.all()
     serializer_class = PasienSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend, rest_filters.SearchFilter)
     filterset_fields = "__all__"
     filterset_class = PasienFilterset
     search_fields = ["nama", "nomor_identitas", "nomor_telepon"]
