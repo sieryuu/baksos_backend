@@ -433,18 +433,48 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 class ReportViewSet(viewsets.ViewSet):
     @action(detail=False, methods=["get"])
     def laporan_pendaftaran(self, request, pk=None):
-        res = pivot(Pasien, "penyakit_id", "puskesmas__pulau", "id", aggregation=Count)
+        full_report = LaporanService.laporan_pendaftaran()
 
-        return Response(res)
+        return Response(full_report)
+    
+    @action(detail=False, methods=["get"])
+    def download_laporan_pendaftaran(self, request, pk=None):
+
+        workbook = LaporanService.laporan_pendaftaran_excel()
+
+        response = HttpResponse(
+            content=save_virtual_workbook(workbook),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        response["Content-Disposition"] = "attachment; filename=LaporanPendaftaran.xlsx"
+        return response
 
     @action(detail=False, methods=["get"])
     def laporan_kehadiran(self, request, pk=None):
-        full_report = LaporanService.laporan_screening()
+        full_report = LaporanService.laporan_kehadiran()
 
         return Response(full_report)
 
     @action(detail=False, methods=["get"])
     def download_laporan_kehadiran(self, request, pk=None):
+
+        workbook = LaporanService.laporan_kehadiran_excel()
+
+        response = HttpResponse(
+            content=save_virtual_workbook(workbook),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        response["Content-Disposition"] = "attachment; filename=LaporanKehadiran.xlsx"
+        return response
+    
+    @action(detail=False, methods=["get"])
+    def laporan_screening(self, request, pk=None):
+        full_report = LaporanService.laporan_screening()
+
+        return Response(full_report)
+
+    @action(detail=False, methods=["get"])
+    def download_laporan_screening(self, request, pk=None):
 
         workbook = LaporanService.laporan_screening_excel()
 
