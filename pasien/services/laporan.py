@@ -177,25 +177,28 @@ def laporan_screening():
     for penyakit in penyakits:
         rep = full_report[penyakit]
 
-        tidak_lulus_tensi = screenings.filter(telah_lewat_cek_tensi=False).count()
+        screening_penyakit = screenings.filter(pasien__penyakit__pk=penyakit)
+        kartu_kuning_penyakit = kartu_kunings.filter(pasien__penyakit__pk=penyakit)
+
+        tidak_lulus_tensi = screening_penyakit.filter(telah_lewat_cek_tensi=False).count()
         tidak_lulus_fisik = (
-            screenings.filter(telah_lewat_pemeriksaan=False)
+            screening_penyakit.filter(telah_lewat_pemeriksaan=False)
             .exclude(pasien__penyakit__grup="KATARAK")
             .count()
         )
-        tidak_lulus_mata = screenings.filter(
+        tidak_lulus_mata = screening_penyakit.filter(
             telah_lewat_pemeriksaan=False, pasien__penyakit__grup="KATARAK"
         ).count()
-        tidak_lulus_kk = screenings.filter(telah_lewat_cek_kartu_kuning=False).count()
+        tidak_lulus_kk = screening_penyakit.filter(telah_lewat_cek_kartu_kuning=False).count()
 
         rep["total_hadir"] = pasien.filter(
             diagnosa=penyakit, nomor_antrian__isnull=False
         ).count()
-        rep["total_pasien_lolos_kk"] = kartu_kunings.filter(status="LOLOS").count()
-        rep["total_pasien_lolos_kk_hari_pertama"] = kartu_kunings.filter(
+        rep["total_pasien_lolos_kk"] = kartu_kuning_penyakit.filter(status="LOLOS").count()
+        rep["total_pasien_lolos_kk_hari_pertama"] = kartu_kuning_penyakit.filter(
             status="LOLOS", waktu_dibuat__date="2022-09-24"
         ).count()
-        rep["total_pasien_lolos_kk_hari_kedua"] = kartu_kunings.filter(
+        rep["total_pasien_lolos_kk_hari_kedua"] = kartu_kuning_penyakit.filter(
             status="LOLOS", waktu_dibuat__date="2022-09-25"
         ).count()
         rep["total_tidak_lolos"] = (
@@ -205,7 +208,7 @@ def laporan_screening():
         rep["tidak_lulus_fisik"] = tidak_lulus_fisik
         rep["tidak_lulus_mata"] = tidak_lulus_mata
         rep["tidak_lulus_kk"] = tidak_lulus_kk
-        rep["total_pending_kk"] = kartu_kunings.filter(status="PENDING").count()
+        rep["total_pending_kk"] = kartu_kuning_penyakit.filter(status="PENDING").count()
         rep["lolos_pending_hari_pertama"] = 0
         rep["lolos_pending_hari_kedua"] = 0
 
