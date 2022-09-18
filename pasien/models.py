@@ -112,6 +112,7 @@ class ScreeningPasien(CrudModel):
 
 
 class DetailPasien(CrudModel):
+    pasien = models.OneToOneField(Pasien, on_delete=models.CASCADE)
     tensi = models.CharField(max_length=100)
     HB = models.CharField(max_length=100)
     LEUCO = models.CharField(max_length=100)
