@@ -19,7 +19,20 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_user_permission(self, request, pk=None):
         user: User = get_current_user()
 
-        user_dict = model_to_dict(user)
+        user_dict = model_to_dict(
+            user,
+            [
+                "id,",
+                "is_superuser",
+                "username",
+                "first_name",
+                "last_name",
+                "email",
+                "is_staff",
+                "is_active",
+                "groups",
+            ],
+        )
         groups = []
         for x in user_dict["groups"]:
             groups.append(model_to_dict(x, ["name", "id"]))
