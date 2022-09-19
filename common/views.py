@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.forms.models import model_to_dict
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 
@@ -6,15 +6,23 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from common.serializer import UserSerializer
 from django_filters import rest_framework as filters
+from crum import get_current_user
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_fields = '__all__'
+    filterset_fields = "__all__"
 
-    @action(detail=True, methods=["get"])
+    @action(detail=False, methods=["get"])
     def get_user_permission(self, request, pk=None):
-        user: User = self.get_object()
-        return Response(user.get_all_permissions())
+        user: User = get_current_user()
+
+        user_dict = model_to_dict(user)
+        groups = []
+        for x in user_dict["groups"]:
+            groups.append(model_to_dict(x))
+        user_dict["groups"] = groups
+
+        return Response({"user": user_dict, "permissions": user.get_all_permissions()})
