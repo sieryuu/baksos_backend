@@ -22,7 +22,7 @@ class UserViewSet(viewsets.ModelViewSet):
         user_dict = model_to_dict(user)
         groups = []
         for x in user_dict["groups"]:
-            groups.append(model_to_dict(x))
+            groups.append(model_to_dict(x, ["name", "id"]))
         user_dict["groups"] = groups
 
         return Response({"user": user_dict, "permissions": user.get_all_permissions()})

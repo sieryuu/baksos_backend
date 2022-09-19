@@ -61,8 +61,8 @@ def generate_import_template():
     tab.tableStyleInfo = style
     worksheet.add_table(tab)
 
-    puskesmas_list = Puskesmas.objects.all()
-    penyakit_list = Penyakit.objects.all()
+    puskesmas_list = Puskesmas.objects.all().order_by("puskesmas")
+    penyakit_list = Penyakit.objects.all().order_by("nama")
     tipe_identitas = ["KK", "KTP", "PASPOR", "SIM"]
 
     master_data_worksheet = workbook.create_sheet("Master Data")
@@ -91,7 +91,9 @@ def generate_import_template():
         column_cell = "E"
         master_data_worksheet[column_cell + str(row + 2)] = i
 
-    for row, i in enumerate(puskesmas_list.values_list("pulau", flat=True).distinct()):
+    for row, i in enumerate(
+        puskesmas_list.order_by("pulau").values_list("pulau", flat=True).distinct()
+    ):
         column_cell = "G"
         master_data_worksheet[column_cell + str(row + 2)] = i
 
@@ -133,8 +135,9 @@ def import_pasien(file):
 
         umur = f"{tahun} Tahun {bulan} Bulan"
 
-        inputted_puskemas = row[1].value
-        inputted_penyakit = row[2].value
+        inputted_puskemas = str(row[1].value).upper().strip()
+        inputted_penyakit = str(row[2].value).upper().strip()
+        inputted_daerah = str(row[10].value).upper().strip()
 
         if not puskesmas_list.filter(puskesmas=inputted_puskemas).exists():
             raise ValidationError(
@@ -144,6 +147,11 @@ def import_pasien(file):
         if not penyakit_list.filter(nama=inputted_penyakit).exists():
             raise ValidationError(
                 f"Row: {row[0].row} - Data Penyakit yang ditaruh tidak valid."
+            )
+
+        if not puskesmas_list.filter(pulau=inputted_daerah).exists():
+            raise ValidationError(
+                f"Row: {row[0].row} - Daerah yang ditaruh tidak valid."
             )
 
         puskesmas = puskesmas_list.get(puskesmas=inputted_puskemas)
@@ -156,13 +164,13 @@ def import_pasien(file):
                 penyakit=penyakit,
                 nama=row[3].value,
                 nomor_identitas=row[4].value,
-                tipe_identitas=row[5].value,
+                tipe_identitas=str(row[5].value).upper().strip(),
                 tempat_lahir=row[6].value,
                 tanggal_lahir=row[7].value,
                 umur=umur,
                 jenis_kelamin=row[8].value,
                 alamat=row[9].value,
-                daerah=row[10].value,
+                daerah=inputted_daerah,
                 pulau=puskesmas.pulau,
                 nomor_telepon=row[11].value,
                 nama_keluarga=row[12].value,
