@@ -13,7 +13,9 @@ from openpyxl.worksheet.table import Table, TableStyleInfo
 # this entire file has bad codes from the worst depths of hell
 # pls forgive
 
-
+def beautify_header(header: str):
+    return header.replace('_', ' ').upper()
+ 
 def laporan_pendaftaran():
     pasien = Pasien.objects.all()
     pulaus = Puskesmas.objects.all().values_list("pulau", flat=True).distinct()
@@ -39,34 +41,45 @@ def laporan_pendaftaran_excel():
 
     workbook = Workbook()
     worksheet = workbook.active
+    
+    worksheet["A1"] = "LAPORAN PENDAFTARAN"
+    worksheet["A1"].font = Font(size=20)
 
-    worksheet["A1"].value = "DAERAH"
+    worksheet["A3"].value = "DAERAH"
     for row, i in enumerate(colu):
         column_cell = "A"
-        worksheet[column_cell + str(row + 2)] = str(i)
+        worksheet[column_cell + str(row + 4)] = str(i)
 
     headers = full_report[0].keys()
 
     for col, entry in enumerate(headers):
-        worksheet.cell(row=1, column=col + 2, value=entry)
+        worksheet.cell(row=3, column=col + 2, value=beautify_header(entry))
+        worksheet.cell(row=3, column=col + 2).font = Font(bold=True)
 
-    row = 2
+    row = 4
     for data in full_report:
         for col, entry in enumerate(data):
             worksheet.cell(row=row, column=col + 2, value=data[entry])
         row += 1
     
-    tab = Table(displayName="Table1", ref=f"A1:E{worksheet.max_row}")
+    tab = Table(displayName="Table1", ref=f"A3:E{worksheet.max_row}")
     style = TableStyleInfo(
-        name="TableStyleLight8",
+        name="TableStyleLight1",
         showFirstColumn=False,
         showLastColumn=False,
-        showRowStripes=True,
-        showColumnStripes=True,
+        showRowStripes=False,
+        showColumnStripes=False,
     )
     tab.tableStyleInfo = style
     worksheet.add_table(tab)
+    
+    dim_holder = DimensionHolder(worksheet=worksheet)
+    for col in range(worksheet.min_column, worksheet.max_column + 1):
+        dim_holder[get_column_letter(col)] = ColumnDimension(
+            worksheet, min=col, max=col, width=20
+        )
 
+    worksheet.column_dimensions = dim_holder
 
     return workbook
 
@@ -128,17 +141,21 @@ def laporan_kehadiran_excel():
 
     penyakit_list = list(full_report.keys())
 
-    worksheet["A1"].value = "JenisPenyakit"
+    worksheet["A1"] = "LAPORAN KEHADIRAN"
+    worksheet["A1"].font = Font(size=20)
+
+    worksheet["A3"].value = "JENIS PENYAKIT"
     for row, i in enumerate(penyakit_list):
         column_cell = "A"
-        worksheet[column_cell + str(row + 2)] = str(i)
+        worksheet[column_cell + str(row + 4)] = str(i)
 
     header_list = list(full_report[penyakit_list[0]].keys())
 
     for col, entry in enumerate(header_list):
-        worksheet.cell(row=1, column=col + 2, value=entry)
+        worksheet.cell(row=3, column=col + 2, value=beautify_header(entry))
+        worksheet.cell(row=3, column=col + 2).font = Font(bold=True)
 
-    row = 2
+    row = 4
     for penyakit in penyakit_list:
         penyakit_data = list(full_report[penyakit].values())
         for col, entry in enumerate(penyakit_data):
@@ -153,13 +170,13 @@ def laporan_kehadiran_excel():
 
     worksheet.column_dimensions = dim_holder
 
-    tab = Table(displayName="Table1", ref=f"A1:M{worksheet.max_row}")
+    tab = Table(displayName="Table1", ref=f"A3:M{worksheet.max_row}")
     style = TableStyleInfo(
-        name="TableStyleLight8",
+        name="TableStyleLight1",
         showFirstColumn=False,
         showLastColumn=False,
-        showRowStripes=True,
-        showColumnStripes=True,
+        showRowStripes=False,
+        showColumnStripes=False,
     )
     tab.tableStyleInfo = style
     worksheet.add_table(tab)
@@ -223,17 +240,21 @@ def laporan_screening_excel():
 
     penyakit_list = list(full_report.keys())
 
-    worksheet["A1"].value = "JenisPenyakit"
+    worksheet["A1"] = "LAPORAN SCREENING"
+    worksheet["A1"].font = Font(size=20)
+
+    worksheet["A3"].value = "JENIS PENYAKIT"
     for row, i in enumerate(penyakit_list):
         column_cell = "A"
-        worksheet[column_cell + str(row + 2)] = str(i)
+        worksheet[column_cell + str(row + 4)] = str(i)
 
     header_list = list(full_report[penyakit_list[0]].keys())
 
     for col, entry in enumerate(header_list):
-        worksheet.cell(row=1, column=col + 2, value=entry)
+        worksheet.cell(row=3, column=col + 2, value=beautify_header(entry))
+        worksheet.cell(row=3, column=col + 2).font = Font(bold=True)
 
-    row = 2
+    row = 4
     for penyakit in penyakit_list:
         penyakit_data = list(full_report[penyakit].values())
         for col, entry in enumerate(penyakit_data):
@@ -248,13 +269,13 @@ def laporan_screening_excel():
 
     worksheet.column_dimensions = dim_holder
 
-    tab = Table(displayName="Table1", ref=f"A1:M{worksheet.max_row}")
+    tab = Table(displayName="Table1", ref=f"A3:M{worksheet.max_row}")
     style = TableStyleInfo(
-        name="TableStyleLight8",
+        name="TableStyleLight1",
         showFirstColumn=False,
         showLastColumn=False,
-        showRowStripes=True,
-        showColumnStripes=True,
+        showRowStripes=False,
+        showColumnStripes=False,
     )
     tab.tableStyleInfo = style
     worksheet.add_table(tab)
