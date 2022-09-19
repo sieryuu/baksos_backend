@@ -18,6 +18,11 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["get"])
     def get_user_permission(self, request, pk=None):
         user: User = get_current_user()
-        return Response(
-            {"user": model_to_dict(user), "permissions": user.get_all_permissions()}
-        )
+
+        user_dict = model_to_dict(user)
+        groups = []
+        for x in user_dict["groups"]:
+            groups.append(model_to_dict(x))
+        user_dict["groups"] = groups
+
+        return Response({"user": user_dict, "permissions": user.get_all_permissions()})
