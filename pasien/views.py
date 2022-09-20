@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.utils import IntegrityError
 from django.http import HttpResponse
 from openpyxl.writer.excel import save_virtual_workbook
 from rest_framework import viewsets
@@ -29,12 +30,56 @@ from common.models import check_user_permission
 
 # Create your views here.
 class PasienViewSet(viewsets.ModelViewSet):
-    queryset = Pasien.objects.all().order_by('nomor_seri')
+    queryset = Pasien.objects.all().order_by("nomor_seri")
     serializer_class = PasienSerializer
     filter_backends = (filters.DjangoFilterBackend, rest_filters.SearchFilter)
     filterset_fields = "__all__"
     filterset_class = PasienFilterset
     search_fields = ["nama", "nomor_identitas", "nomor_telepon"]
+
+    def create(self, request, *args, **kwargs):
+        try:
+            resp = super().create(request, *args, **kwargs)
+        except IntegrityError as err:
+            if str(err).startswith(
+                'duplicate key value violates unique constraint "unique_name_and_dob"'
+            ):
+                aa = str(err)[
+                    len(
+                        'duplicate key value violates unique constraint "unique_name_and_dob"\nDETAIL:  Key (nama, tanggal_lahir)=('
+                    ) :
+                ]
+                bb = aa[0 : aa.index(") already exists")]
+                split_str = bb.split(", ")
+                return Response(
+                    f"Data Nama ({split_str[0]}) dan Tanggal Lahir ({split_str[1]}) yang ditaruh telah terdaftar."
+                )
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as ex:
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return resp
+
+    def update(self, request, *args, **kwargs):
+        try:
+            resp = super().update(request, *args, **kwargs)
+        except IntegrityError as err:
+            if str(err).startswith(
+                'duplicate key value violates unique constraint "unique_name_and_dob"'
+            ):
+                aa = str(err)[
+                    len(
+                        'duplicate key value violates unique constraint "unique_name_and_dob"\nDETAIL:  Key (nama, tanggal_lahir)=('
+                    ) :
+                ]
+                bb = aa[0 : aa.index(") already exists")]
+                split_str = bb.split(", ")
+                return Response(
+                    f"Data Nama ({split_str[0]}) dan Tanggal Lahir ({split_str[1]}) yang ditaruh telah terdaftar."
+                )
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as ex:
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return resp
 
     @action(detail=False, methods=["get"])
     def template(self, request, pk=None):
@@ -58,12 +103,27 @@ class PasienViewSet(viewsets.ModelViewSet):
                 content="Import File Sukses!",
             )
             return response
+        except IntegrityError as err:
+            if str(err).startswith(
+                'duplicate key value violates unique constraint "unique_name_and_dob"'
+            ):
+                aa = str(err)[
+                    len(
+                        'duplicate key value violates unique constraint "unique_name_and_dob"\nDETAIL:  Key (nama, tanggal_lahir)=('
+                    ) :
+                ]
+                bb = aa[0 : aa.index(") already exists")]
+                split_str = bb.split(", ")
+                return Response(
+                    f"Data Nama ({split_str[0]}) dan Tanggal Lahir ({split_str[1]}) yang ditaruh telah terdaftar."
+                )
+            return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except ValidationError as ex:
             raise ex
         except Exception as ex:
             return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-    #@check_user_permission(['lab'])
+
+    # @check_user_permission(['lab'])
     @transaction.atomic
     @action(detail=True, methods=["post"])
     def update_penyakit(self, request, pk=None):
@@ -118,13 +178,9 @@ class PasienViewSet(viewsets.ModelViewSet):
         try:
             pasien = self.get_object()
 
-            PasienService.batal_nomor_antrian(
-                pasien=pasien
-            )
+            PasienService.batal_nomor_antrian(pasien=pasien)
 
-            return Response(
-                f"Antrian pasien {pasien.nama} sudah dibatalkan!"
-            )
+            return Response(f"Antrian pasien {pasien.nama} sudah dibatalkan!")
         except ValidationError as ex:
             raise ex
         except Exception as ex:
@@ -217,7 +273,7 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
         except Exception as ex:
             return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    #@check_user_permission(allowed_users=['pemeriksaan_mata', 'pemeriksaan_fisik'])
+    # @check_user_permission(allowed_users=['pemeriksaan_mata', 'pemeriksaan_fisik'])
     @transaction.atomic
     @action(detail=False, methods=["post"])
     def hadir_pemeriksaan(self, request, pk=None):
@@ -455,7 +511,7 @@ class ReportViewSet(viewsets.ViewSet):
         full_report = LaporanService.laporan_pendaftaran()
 
         return Response(full_report)
-    
+
     @action(detail=False, methods=["get"])
     def download_laporan_pendaftaran(self, request, pk=None):
 
@@ -485,7 +541,7 @@ class ReportViewSet(viewsets.ViewSet):
         )
         response["Content-Disposition"] = "attachment; filename=LaporanKehadiran.xlsx"
         return response
-    
+
     @action(detail=False, methods=["get"])
     def laporan_screening(self, request, pk=None):
         full_report = LaporanService.laporan_screening()
@@ -512,4 +568,3 @@ class KartuKuningViewSet(viewsets.ModelViewSet):
     filterset_fields = [
         "pasien"
     ]  # kasih all ada error karena kolom perhatian itu array
-
