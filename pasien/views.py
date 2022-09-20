@@ -52,7 +52,8 @@ class PasienViewSet(viewsets.ModelViewSet):
                 bb = aa[0 : aa.index(") already exists")]
                 split_str = bb.split(", ")
                 return Response(
-                    f"Data Nama ({split_str[0]}) dan Tanggal Lahir ({split_str[1]}) yang ditaruh telah terdaftar."
+                    f"Data Nama ({split_str[0]}) dan Tanggal Lahir ({split_str[1]}) yang ditaruh telah terdaftar.",
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as ex:
@@ -74,7 +75,8 @@ class PasienViewSet(viewsets.ModelViewSet):
                 bb = aa[0 : aa.index(") already exists")]
                 split_str = bb.split(", ")
                 return Response(
-                    f"Data Nama ({split_str[0]}) dan Tanggal Lahir ({split_str[1]}) yang ditaruh telah terdaftar."
+                    f"Data Nama ({split_str[0]}) dan Tanggal Lahir ({split_str[1]}) yang ditaruh telah terdaftar.",
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as ex:
@@ -115,7 +117,8 @@ class PasienViewSet(viewsets.ModelViewSet):
                 bb = aa[0 : aa.index(") already exists")]
                 split_str = bb.split(", ")
                 return Response(
-                    f"Data Nama ({split_str[0]}) dan Tanggal Lahir ({split_str[1]}) yang ditaruh telah terdaftar."
+                    f"Data Nama ({split_str[0]}) dan Tanggal Lahir ({split_str[1]}) yang ditaruh telah terdaftar.",
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             return Response(str(ex), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except ValidationError as ex:
