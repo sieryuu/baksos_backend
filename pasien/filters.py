@@ -6,6 +6,7 @@ class PasienFilterset(filters.FilterSet):
     tanggal_antri = filters.DateTimeFromToRangeFilter(
         field_name="tanggal_nomor_antrian"
     )
+    nomor_seri_icontains = filters.CharFilter("nomor_seri", lookup_expr="icontains")
 
     class Meta:
         model = Pasien
