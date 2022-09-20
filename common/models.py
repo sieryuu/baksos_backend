@@ -52,3 +52,4 @@ def check_user_permission(allowed_users):
         return wrapper
 
     return decorator
+

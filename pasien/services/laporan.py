@@ -8,13 +8,12 @@ from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.dimensions import ColumnDimension, DimensionHolder
 from openpyxl.worksheet.table import Table, TableStyleInfo
-
+from pasien.services.helper import beautify_header
 
 # this entire file has bad codes from the worst depths of hell
 # pls forgive
 
-def beautify_header(header: str):
-    return header.replace('_', ' ').upper()
+
  
 def laporan_pendaftaran():
     pasien = Pasien.objects.all()
