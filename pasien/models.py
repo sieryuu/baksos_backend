@@ -134,4 +134,4 @@ class KartuKuning(CrudModel):
     jam_operasi = models.TimeField(null=True)
     perhatian = ArrayField(models.CharField(max_length=50), null=True)
     status = models.CharField(max_length=10)
-    komentar = models.CharField(max_length=255, null=True)
+    komentar = models.CharField(max_length=500, null=True)

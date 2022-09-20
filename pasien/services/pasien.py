@@ -12,6 +12,7 @@ from referensi.models import Penyakit, Puskesmas
 
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from pasien.services.helper import beautify_header
 
 
 def generate_import_template():
@@ -126,13 +127,12 @@ def import_pasien(file):
     for row in worksheet.iter_rows(
         min_row=4, min_col=1, max_row=worksheet.max_row, max_col=worksheet.max_column
     ):
+        # count years
         date_of_birth = now - row[7].value
         years = date_of_birth.total_seconds() / (365.242 * 24 * 3600)
         tahun = int(years)
-
         months = (years - tahun) * 12
         bulan = int(months)
-
         umur = f"{tahun} Tahun {bulan} Bulan"
 
         inputted_puskemas = str(row[1].value).upper().strip()
@@ -180,6 +180,8 @@ def import_pasien(file):
                 nomor_telepon_pendamping=row[13].value,
             )
         )
+
+        __validate_input_data(new_patients)
 
     Pasien.objects.bulk_create(new_patients)
 
@@ -247,3 +249,43 @@ def __generate_nomor_kartu_kuning():
         running_no = running_no + last_running_no
 
     return prefix + str(running_no).zfill(4)
+
+
+def __validate_input_data(pasien_list: list[Pasien]):
+    NON_NULL_VALUES = [
+        "nomor_seri",
+        "nama",
+        "nomor_identitas",
+        "tempat_lahir",
+        "jenis_kelamin",
+        "alamat",
+        "tipe_identitas",
+        "tanggal_lahir",
+        "nomor_telepon",
+        "nama_keluarga",
+        "nomor_telepon_keluarga",
+    ]
+    DEFAULT_GENDER_VALUE = ["L", "P"]
+    all_pasien = Pasien.objects.all()
+    for row, pasien in enumerate(pasien_list, 1):
+        for non_null_value in NON_NULL_VALUES:
+            value = getattr(pasien, non_null_value)
+            if value is None:
+                raise ValidationError(
+                    f"Row: {row + 3} - {beautify_header(non_null_value)} tidak ditaruh."
+                )
+
+        if all_pasien.filter(nomor_seri=pasien.nomor_seri).exists():
+            raise ValidationError(
+                f"Row: {row + 3} - No. Seri ({pasien.nomor_seri}) yang ditaruh telah terdaftar."
+            )
+
+        if all_pasien.filter(nomor_identitas=pasien.nomor_identitas).exists():
+            raise ValidationError(
+                f"Row: {row + 3} - No. Identitas ({pasien.nomor_identitas}) yang ditaruh telah terdaftar."
+            )
+
+        if pasien.jenis_kelamin not in DEFAULT_GENDER_VALUE:
+            raise ValidationError(
+                f"Row: {row + 3} - Data Jenis Kelamin yang ditaruh tidak valid."
+            )
