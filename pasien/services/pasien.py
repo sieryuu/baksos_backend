@@ -266,6 +266,7 @@ def __validate_input_data(pasien_list: list[Pasien]):
         "nomor_telepon_keluarga",
     ]
     DEFAULT_GENDER_VALUE = ["L", "P"]
+    CHECK_MAX_LENGTH_VALUE = ["nomor_identitas", "nomor_telepon", "nomor_telepon_keluarga"]
     all_pasien = Pasien.objects.all()
     for row, pasien in enumerate(pasien_list, 1):
         for non_null_value in NON_NULL_VALUES:
@@ -273,6 +274,13 @@ def __validate_input_data(pasien_list: list[Pasien]):
             if value is None:
                 raise ValidationError(
                     f"Row: {row + 3} - {beautify_header(non_null_value)} tidak ditaruh."
+                )
+
+        for check_value in CHECK_MAX_LENGTH_VALUE:
+            value = getattr(pasien, check_value)
+            if len(value) > 30:
+                raise ValidationError(
+                    f"Row: {row + 3} - {beautify_header(non_null_value)} yang ditaruh lebih dari 30 karakter."
                 )
 
         if all_pasien.filter(nomor_seri=pasien.nomor_seri).exists():

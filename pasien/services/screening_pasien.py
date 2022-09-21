@@ -112,6 +112,10 @@ def batal_tensi(screening: ScreeningPasien):
     screening.petugas_cek_tensi = None
     screening.save()
 
+    pasien = screening.pasien
+    pasien.last_status = "BATAL TENSI"
+    pasien.save()
+
 
 def batal_pemeriksaan(screening: ScreeningPasien):
     screening.telah_lewat_pemeriksaan = None
@@ -124,17 +128,24 @@ def batal_pemeriksaan(screening: ScreeningPasien):
     screening.petugas_cek_tensi = None
     screening.save()
 
+    pasien = screening.pasien
+    pasien.last_status = "BATAL PEMERIKSAAN"
+    pasien.save()
+
 
 def batal_lab(screening: ScreeningPasien):
     screening.telah_lewat_cek_lab = None
     screening.jam_cek_lab = None
     screening.petugas_cek_lab = None
     screening.save()
+    batal_radiologi(screening)
+    batal_ekg(screening)
 
     pasien: Pasien = screening.pasien
     pasien.perlu_ekg = False
     pasien.perlu_radiologi = False
     pasien.diagnosa = pasien.penyakit.pk
+    pasien.last_status = "BATAL LAB"
     pasien.save()
 
 
@@ -144,7 +155,12 @@ def batal_radiologi(screening: ScreeningPasien):
     screening.petugas_cek_radiologi = None
     screening.tipe_hasil_rontgen = None
     screening.nomor_kertas_penyerahan = None
+    
     screening.save()
+
+    pasien = screening.pasien
+    pasien.last_status = "BATAL RADIOLOGI"
+    pasien.save()
 
 
 def batal_ekg(screening: ScreeningPasien):
@@ -153,9 +169,17 @@ def batal_ekg(screening: ScreeningPasien):
     screening.petugas_cek_ekg = None
     screening.save()
 
+    pasien = screening.pasien
+    pasien.last_status = "BATAL EKG"
+    pasien.save()
+
 
 def batal_kartu_kuning(screening: ScreeningPasien):
     screening.telah_lewat_cek_kartu_kuning = None
     screening.jam_cek_kartu_kuning = None
     screening.petugas_cek_kartu_kuning = None
     screening.save()
+    
+    pasien = screening.pasien
+    pasien.last_status = "BATAL KARTU KUNING"
+    pasien.save()
