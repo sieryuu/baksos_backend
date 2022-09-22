@@ -118,8 +118,8 @@ def import_pasien(file):
     if worksheet["A1"].value != "Template Import Pasien":
         raise ValidationError("Invalid file, please check again!")
 
-    puskesmas_list = Puskesmas.objects.all()
-    penyakit_list = Penyakit.objects.all()
+    puskesmas_list = list(Puskesmas.objects.all())
+    penyakit_list = list(Penyakit.objects.all())
 
     now = datetime.now()
 
@@ -139,23 +139,36 @@ def import_pasien(file):
         inputted_penyakit = str(row[2].value).upper().strip()
         inputted_daerah = str(row[10].value).upper().strip()
 
-        if not puskesmas_list.filter(puskesmas=inputted_puskemas).exists():
+        if (
+            next(
+                filter(lambda x: x.puskesmas == inputted_puskemas, puskesmas_list), None
+            )
+            is None
+        ):
             raise ValidationError(
                 f"Row: {row[0].row} - Data Puskesmas yang ditaruh tidak valid."
             )
 
-        if not penyakit_list.filter(nama=inputted_penyakit).exists():
+        if (
+            next(filter(lambda x: x.nama == inputted_penyakit, penyakit_list), None)
+            is None
+        ):
             raise ValidationError(
                 f"Row: {row[0].row} - Data Penyakit yang ditaruh tidak valid."
             )
 
-        if not puskesmas_list.filter(pulau=inputted_daerah).exists():
+        if (
+            next(filter(lambda x: x.pulau == inputted_daerah, puskesmas_list), None)
+            is None
+        ):
             raise ValidationError(
                 f"Row: {row[0].row} - Daerah yang ditaruh tidak valid."
             )
 
-        puskesmas = puskesmas_list.get(puskesmas=inputted_puskemas)
-        penyakit = penyakit_list.get(nama=inputted_penyakit)
+        puskesmas = next(
+            filter(lambda x: x.puskesmas == inputted_puskemas, puskesmas_list)
+        )
+        penyakit = next(filter(lambda x: x.nama == inputted_penyakit, penyakit_list))
 
         new_patients.append(
             Pasien(
@@ -266,8 +279,12 @@ def __validate_input_data(pasien_list: list[Pasien]):
         "nomor_telepon_keluarga",
     ]
     DEFAULT_GENDER_VALUE = ["L", "P"]
-    CHECK_MAX_LENGTH_VALUE = ["nomor_identitas", "nomor_telepon", "nomor_telepon_keluarga"]
-    all_pasien = Pasien.objects.all()
+    CHECK_MAX_LENGTH_VALUE = [
+        "nomor_identitas",
+        "nomor_telepon",
+        "nomor_telepon_keluarga",
+    ]
+    all_pasien: list[Pasien] = list(Pasien.objects.all())
     for row, pasien in enumerate(pasien_list, 1):
         for non_null_value in NON_NULL_VALUES:
             value = getattr(pasien, non_null_value)
@@ -277,18 +294,21 @@ def __validate_input_data(pasien_list: list[Pasien]):
                 )
 
         for check_value in CHECK_MAX_LENGTH_VALUE:
-            value = getattr(pasien, check_value)
+            value = str(getattr(pasien, check_value))
             if len(value) > 30:
                 raise ValidationError(
                     f"Row: {row + 3} - {beautify_header(non_null_value)} yang ditaruh lebih dari 30 karakter."
                 )
 
-        if all_pasien.filter(nomor_seri=pasien.nomor_seri).exists():
+        if next(filter(lambda x: x.nomor_seri == pasien.nomor_seri, all_pasien), None):
             raise ValidationError(
                 f"Row: {row + 3} - No. Seri ({pasien.nomor_seri}) yang ditaruh telah terdaftar."
             )
 
-        if all_pasien.filter(nomor_identitas=pasien.nomor_identitas).exists():
+        if next(
+            filter(lambda x: x.nomor_identitas == pasien.nomor_identitas, all_pasien),
+            None,
+        ):
             raise ValidationError(
                 f"Row: {row + 3} - No. Identitas ({pasien.nomor_identitas}) yang ditaruh telah terdaftar."
             )
