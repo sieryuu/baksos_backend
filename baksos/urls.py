@@ -38,7 +38,7 @@ router.register(r"kartu-kuning", KartuKuningViewSet)
 
 
 router.register(r"user", UserViewSet)
-# router.register(r'laporan', ReportViewSet, basename='laporan')
+router.register(r"laporan", ReportViewSet, basename="laporan")
 
 
 urlpatterns = [

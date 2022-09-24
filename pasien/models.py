@@ -79,6 +79,14 @@ class Pasien(CrudModel):
 
         if self.pk is None:
             self.diagnosa = self.penyakit.pk
+        else:
+            if (
+                self.diagnosa in ["MINOR GA", "MINOR LOKAL"]
+                and self.penyakit_id == "BENJOLAN"
+            ) or (self.diagnosa == "PTERYGIUM" and self.penyakit_id == "KATARAK"):
+                pass
+            else:
+                self.diagnosa = self.penyakit.pk
 
         if self.daerah not in pulau:
             raise ValidationError(f"{self.daerah} tidak ada di daftar pulau!")

@@ -509,59 +509,70 @@ class ScreeningPasienViewSet(viewsets.ModelViewSet):
 
 
 class ReportViewSet(viewsets.ViewSet):
-    @action(detail=False, methods=["get"])
-    def laporan_pendaftaran(self, request, pk=None):
-        full_report = LaporanService.laporan_pendaftaran()
+    # @action(detail=False, methods=["get"])
+    # def laporan_pendaftaran(self, request, pk=None):
+    #     if request.query_params.get("tgl") is None:
+    #         return Response("tgl wajib ada", status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(full_report)
+    #     tgl = request.query_params.get("tgl")
+    #     full_report = LaporanService.laporan_pendaftaran(tgl)
 
-    @action(detail=False, methods=["get"])
-    def download_laporan_pendaftaran(self, request, pk=None):
+    #     return Response(full_report)
 
-        workbook = LaporanService.laporan_pendaftaran_excel()
+    # @action(detail=False, methods=["get"])
+    # def download_laporan_pendaftaran(self, request, pk=None):
 
-        response = HttpResponse(
-            content=save_virtual_workbook(workbook),
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-        response["Content-Disposition"] = "attachment; filename=LaporanPendaftaran.xlsx"
-        return response
+    #     workbook = LaporanService.laporan_pendaftaran_excel()
+
+    #     response = HttpResponse(
+    #         content=save_virtual_workbook(workbook),
+    #         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    #     )
+    #     response["Content-Disposition"] = "attachment; filename=LaporanPendaftaran.xlsx"
+    #     return response
 
     @action(detail=False, methods=["get"])
     def laporan_kehadiran(self, request, pk=None):
-        full_report = LaporanService.laporan_kehadiran()
+        if request.query_params.get("tgl") is None:
+            return Response("tgl wajib ada", status=status.HTTP_400_BAD_REQUEST)
+
+        tgl = request.query_params.get("tgl")
+        full_report = LaporanService.laporan_kehadiran(tgl)
 
         return Response(full_report)
 
-    @action(detail=False, methods=["get"])
-    def download_laporan_kehadiran(self, request, pk=None):
+    # @action(detail=False, methods=["get"])
+    # def download_laporan_kehadiran(self, request, pk=None):
 
-        workbook = LaporanService.laporan_kehadiran_excel()
+    # workbook = LaporanService.laporan_kehadiran_excel()
 
-        response = HttpResponse(
-            content=save_virtual_workbook(workbook),
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-        response["Content-Disposition"] = "attachment; filename=LaporanKehadiran.xlsx"
-        return response
+    # response = HttpResponse(
+    #     content=save_virtual_workbook(workbook),
+    #     content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    # )
+    # response["Content-Disposition"] = "attachment; filename=LaporanKehadiran.xlsx"
+    # return response
 
     @action(detail=False, methods=["get"])
     def laporan_screening(self, request, pk=None):
-        full_report = LaporanService.laporan_screening()
+        if request.query_params.get("tgl") is None:
+            return Response("tgl wajib ada", status=status.HTTP_400_BAD_REQUEST)
 
+        tgl = request.query_params.get("tgl")
+        full_report = LaporanService.laporan_screening(tgl)
         return Response(full_report)
 
-    @action(detail=False, methods=["get"])
-    def download_laporan_screening(self, request, pk=None):
+        # @action(detail=False, methods=["get"])
+        # def download_laporan_screening(self, request, pk=None):
 
-        workbook = LaporanService.laporan_screening_excel()
+        # workbook = LaporanService.laporan_screening_excel()
 
-        response = HttpResponse(
-            content=save_virtual_workbook(workbook),
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-        response["Content-Disposition"] = "attachment; filename=LaporanScreening.xlsx"
-        return response
+        # response = HttpResponse(
+        #     content=save_virtual_workbook(workbook),
+        #     content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        # )
+        # response["Content-Disposition"] = "attachment; filename=LaporanScreening.xlsx"
+        # return response
 
 
 class KartuKuningViewSet(viewsets.ModelViewSet):
