@@ -6,11 +6,24 @@ from common.serializer import DEFAULT_READ_ONLY_FIELDS
 from .models import DetailPasien, KartuKuning, Pasien, ScreeningPasien
 
 
+class KartuKuningSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = KartuKuning
+        fields = "__all__"
+        read_only_fields = DEFAULT_READ_ONLY_FIELDS
+
+
 class PasienSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pasien
         fields = "__all__"
         read_only_fields = DEFAULT_READ_ONLY_FIELDS
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        kartukuning = KartuKuningSerializer(getattr(instance, "kartukuning", None))
+        response["kartukuning"] = kartukuning.data
+        return response
 
 
 class DetailPasienSerializer(serializers.ModelSerializer):
@@ -23,13 +36,6 @@ class DetailPasienSerializer(serializers.ModelSerializer):
 class ScreeningPasienSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScreeningPasien
-        fields = "__all__"
-        read_only_fields = DEFAULT_READ_ONLY_FIELDS
-
-
-class KartuKuningSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = KartuKuning
         fields = "__all__"
         read_only_fields = DEFAULT_READ_ONLY_FIELDS
 

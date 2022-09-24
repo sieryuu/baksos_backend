@@ -18,29 +18,31 @@ from django.urls import include, path
 from rest_framework import routers
 from common.views import UserViewSet
 
-from pasien.views import (DetailPasienViewSet, PasienViewSet, ReportViewSet,
-                          ScreeningPasienViewSet, KartuKuningViewSet)
+from pasien.views import (
+    DetailPasienViewSet,
+    PasienViewSet,
+    ReportViewSet,
+    ScreeningPasienViewSet,
+    KartuKuningViewSet,
+)
 from referensi.views import PenyakitViewSet, PuskesmasViewSet
-from rest_framework.authtoken.views import obtain_auth_token 
+from rest_framework.authtoken.views import obtain_auth_token
 
 router = routers.DefaultRouter()
-router.register(r'pasien', PasienViewSet)
-router.register(r'detail-pasien', DetailPasienViewSet)
-router.register(r'screening-pasien', ScreeningPasienViewSet)
-router.register(r'puskesmas', PuskesmasViewSet)
-router.register(r'penyakit', PenyakitViewSet)
-router.register(r'kartu-kuning', KartuKuningViewSet)
+router.register(r"pasien", PasienViewSet)
+router.register(r"detail-pasien", DetailPasienViewSet)
+router.register(r"screening-pasien", ScreeningPasienViewSet)
+router.register(r"puskesmas", PuskesmasViewSet)
+router.register(r"penyakit", PenyakitViewSet)
+router.register(r"kartu-kuning", KartuKuningViewSet)
 
 
-router.register(r'user', UserViewSet)
-router.register(r'laporan', ReportViewSet, basename='laporan')
-
-
+router.register(r"user", UserViewSet)
+# router.register(r'laporan', ReportViewSet, basename='laporan')
 
 
 urlpatterns = [
-    path('', include(router.urls)), 
-    path('admin/', admin.site.urls),
-    path('api-token-auth/', obtain_auth_token, name='api_token_auth'), 
+    path("", include(router.urls)),
+    path("admin/", admin.site.urls),
+    path("api-token-auth/", obtain_auth_token, name="api_token_auth"),
 ]
-

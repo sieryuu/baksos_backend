@@ -30,7 +30,7 @@ from common.models import check_user_permission
 
 # Create your views here.
 class PasienViewSet(viewsets.ModelViewSet):
-    queryset = Pasien.objects.all().order_by("nomor_seri")
+    queryset = Pasien.objects.all().order_by("nomor_seri").select_related("kartukuning")
     serializer_class = PasienSerializer
     filter_backends = (filters.DjangoFilterBackend, rest_filters.SearchFilter)
     filterset_fields = "__all__"
