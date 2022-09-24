@@ -314,6 +314,13 @@ def laporan_screening(tgl: date):
                     "BENJOLAN": dict_data["BENJOLAN"][i],
                     "MINOR GA": dict_data["MINOR GA"][i],
                     "MINOR LOKAL": dict_data["MINOR LOKAL"][i],
+                    "TOTAL": dict_data["KATARAK"][i]
+                    + dict_data["PTERYGIUM"][i]
+                    + dict_data["HERNIA"][i]
+                    + dict_data["SUMBING"][i]
+                    + dict_data["BENJOLAN"][i]
+                    + dict_data["MINOR GA"][i]
+                    + dict_data["MINOR LOKAL"][i],
                 }
             )
             i = i + 1
