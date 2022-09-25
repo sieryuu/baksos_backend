@@ -562,17 +562,19 @@ class ReportViewSet(viewsets.ViewSet):
         full_report = LaporanService.laporan_screening(tgl)
         return Response(full_report)
 
-        # @action(detail=False, methods=["get"])
-        # def download_laporan_screening(self, request, pk=None):
+    @action(detail=False, methods=["get"])
+    def download_laporan_screening(self, request, pk=None):
+        if request.query_params.get("tgl") is None:
+            return Response("tgl wajib ada", status=status.HTTP_400_BAD_REQUEST)
 
-        # workbook = LaporanService.laporan_screening_excel()
-
-        # response = HttpResponse(
-        #     content=save_virtual_workbook(workbook),
-        #     content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        # )
-        # response["Content-Disposition"] = "attachment; filename=LaporanScreening.xlsx"
-        # return response
+        tgl = request.query_params.get("tgl")
+        workbook = LaporanService.laporan_screening_excel(tgl)
+        response = HttpResponse(
+            content=save_virtual_workbook(workbook),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        response["Content-Disposition"] = "attachment; filename=LaporanScreening.xlsx"
+        return response
 
 
 class KartuKuningViewSet(viewsets.ModelViewSet):
