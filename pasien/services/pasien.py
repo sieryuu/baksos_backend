@@ -200,7 +200,7 @@ def import_pasien(file):
 
 
 def serah_nomor_antrian(pasien: Pasien, nomor_antrian: str):
-    if pasien.perlu_rescreen:
+    if pasien.perlu_rescreen and pasien.nomor_antrian:
         pasien.nomor_antrian_pertama = pasien.nomor_antrian
         pasien.tanggal_nomor_antrian_pertama = pasien.tanggal_nomor_antrian
     pasien.nomor_antrian = nomor_antrian

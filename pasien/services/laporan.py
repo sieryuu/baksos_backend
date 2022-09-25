@@ -125,7 +125,7 @@ def laporan_kehadiran(tgl: date):
     with connection.cursor() as cursor:
         cursor.execute(
             """
-        select 
+         select 
             puskesmas_id as "PUSKESMAS",
             rp.pulau as "PULAU",
             SUM(case when penyakit_id = 'KATARAK' then 1 else 0 END) as "KATARAK",
@@ -135,11 +135,11 @@ def laporan_kehadiran(tgl: date):
             COUNT(Id) as "TOTAL"
         from pasien_pasien pp 
             inner join referensi_puskesmas rp on rp.puskesmas = pp.puskesmas_id 
-        where pp.tanggal_nomor_antrian::date = date(%s)
+        where pp.tanggal_nomor_antrian::date = date(%s) or pp.tanggal_nomor_antrian_pertama::date = date(%s)
         group by puskesmas_id, rp.pulau
         order by rp.pulau 
         """,
-            [tgl],
+            [tgl, tgl],
         )
         rows = cursor.fetchall()
 
@@ -235,8 +235,11 @@ def laporan_screening(tgl: date):
             """
         select pp.diagnosa as "PENYAKIT",
             count(*) as "TOTAL_PASIEN",
-            sum(case when pp.tanggal_nomor_antrian::date = date(%s) then 1 else 0 end) as "TOTAL_HADIR",
-            sum(case when pp.perlu_rescreen = true and pp.tanggal_nomor_antrian::date = date(%s) then 1 else 0 end) as "PERLU_RESCREEN",
+            sum(case when pp.tanggal_nomor_antrian::date = date(%s) or pp.tanggal_nomor_antrian_pertama::date = date(%s) then 1 else 0 end) as "TOTAL_HADIR",
+            sum(case when pp.perlu_rescreen = true and 
+                ((pp.tanggal_nomor_antrian::date = date(%s) and pp.tanggal_nomor_antrian_pertama is null) or 
+                    pp.tanggal_nomor_antrian_pertama::date = date(%s)) then 1 else 0 end) as "PERLU_RESCREEN",
+            sum(case when pp.perlu_rescreen = true and pp.tanggal_nomor_antrian::date = date(%s) and pp.tanggal_nomor_antrian_pertama is not null then 1 else 0 end) as "DATANG_RESCREEN",
             sum(case when ps.telah_lewat_cek_tensi = true and ps.jam_cek_tensi::date = date(%s) then 1 else 0 end) as "HADIR_TENSI",
             sum(case when ps.telah_lewat_cek_tensi = false and ps.jam_cek_tensi::date = date(%s) then 1 else 0 end) as "GAGAL_TENSI",
             sum(case when ps.telah_lewat_pemeriksaan = true and ps.jam_pemeriksaan::date = date(%s) then 1 else 0 end) as "HADIR_PEMERIKSAAN",
@@ -252,9 +255,26 @@ def laporan_screening(tgl: date):
             left join pasien_screeningpasien ps on ps.pasien_id = pp.id
             left join pasien_kartukuning pk on pk.pasien_id = pp.id
         group by pp.diagnosa
-        order by diagnosa 
+        order by diagnosa
         """,
-            [tgl, tgl, tgl, tgl, tgl, tgl, tgl, tgl, tgl, tgl, tgl, tgl, tgl],
+            [
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+                tgl,
+            ],
         )
         rows = cursor.fetchall()
 
@@ -266,17 +286,18 @@ def laporan_screening(tgl: date):
                     "TOTAL_PASIEN": row[1],
                     "TOTAL_HADIR": row[2],
                     "PERLU_RESCREEN": row[3],
-                    "HADIR_TENSI": row[4],
-                    "GAGAL_TENSI": row[5],
-                    "HADIR_PEMERIKSAAN": row[6],
-                    "GAGAL_PEMERIKSAAN": row[7],
-                    "HADIR_LAB": row[8],
-                    "HADIR_RONTGEN": row[9],
-                    "HADIR_EKG": row[10],
-                    "HADIR_KARTUKUNING": row[11],
-                    "KARTUKUNING_LOLOS": row[12],
-                    "KARTUKUNING_GAGAL": row[13],
-                    "KARTUKUNING_PENDING": row[14],
+                    "DATANG_RESCREEN": row[4],
+                    "HADIR_TENSI": row[5],
+                    "GAGAL_TENSI": row[6],
+                    "HADIR_PEMERIKSAAN": row[7],
+                    "GAGAL_PEMERIKSAAN": row[8],
+                    "HADIR_LAB": row[9],
+                    "HADIR_RONTGEN": row[10],
+                    "HADIR_EKG": row[11],
+                    "HADIR_KARTUKUNING": row[12],
+                    "KARTUKUNING_LOLOS": row[13],
+                    "KARTUKUNING_GAGAL": row[14],
+                    "KARTUKUNING_PENDING": row[15],
                 }
             )
 
@@ -288,6 +309,7 @@ def laporan_screening(tgl: date):
             "TOTAL_PASIEN",
             "TOTAL_HADIR",
             "PERLU_RESCREEN",
+            "DATANG_RESCREEN",
             "HADIR_TENSI",
             "GAGAL_TENSI",
             "HADIR_PEMERIKSAAN",
